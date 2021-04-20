@@ -16,9 +16,12 @@ namespace UlearnGame
             DoubleBuffered = true;
             Graphics graphics = CreateGraphics();
             InitializeComponent();
+            mainPlayer = new Player(Properties.Resources.spaceShips_001, ClientSize.Height, ClientSize.Width)
+            {
+                X = ClientSize.Width / 2,
+                Y = ClientSize.Height / 2
+            };
             Init();
-
-            
 
             updateTimer = new Timer
             {
@@ -36,11 +39,7 @@ namespace UlearnGame
 
         private void Init()
         {
-            mainPlayer = new Player(Properties.Resources.spaceShips_001, ClientSize.Height, ClientSize.Width)
-            {
-                X = ClientSize.Width / 2,
-                Y = ClientSize.Height / 2
-            };
+            
 
             KeyDown += new KeyEventHandler(OnKeyDown);
             KeyUp += new KeyEventHandler(OnKeyUp);
@@ -72,7 +71,7 @@ namespace UlearnGame
             }
             if (keyCode == Keys.Space)
             {
-                mainPlayer.Shoot(this);
+                mainPlayer.Shoot();
             }
         }
 

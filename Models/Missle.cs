@@ -6,25 +6,22 @@ using System.Windows.Forms;
 
 namespace UlearnGame.Models
 {
-    class Missle
+    public class Missle
     {
         private const int Width = 25;
         private const int Height = 30;
 
         public int Damage { get; }
-        public int X { get; }
-        public int Y { get; }
 
         public int MissleSpeed { get; }
 
-        public Direction Direction { get; }
+        public Direction Direction { get; set; }
 
         public PictureBox MissleImage { get; private set; }
 
-        private Timer movingTimer = new Timer();
+        private readonly Timer movingTimer = new Timer();
 
-
-        public Dictionary<Direction, Image> images = new Dictionary<Direction, Image>()
+        private Dictionary<Direction, Image> images = new Dictionary<Direction, Image>()
         {
             {Direction.Top,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.RotateNoneFlipNone)},
             {Direction.Down,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate180FlipNone)},
@@ -32,21 +29,24 @@ namespace UlearnGame.Models
             {Direction.Right,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate90FlipNone)},
         };
 
-        public Missle(Form form, Direction direction, int bulletSpeed, int x, int y)
+        public Missle(Direction direction, int missleSpeed, int x, int y)
         {
-            MissleSpeed = bulletSpeed;
-            MissleImage = new PictureBox();
-            MissleImage.SizeMode = PictureBoxSizeMode.StretchImage;
-            MissleImage.BackColor = Color.Transparent;
-            MissleImage.Left = x;
-            MissleImage.Top = y;
-            MissleImage.Width = Width;
-            MissleImage.Height = Height;
             Direction = direction;
+            MissleSpeed = missleSpeed;
 
-            form.Controls.Add(MissleImage);
+
+            MissleImage = new PictureBox
+            {
+                SizeMode = PictureBoxSizeMode.StretchImage,
+                BackColor = Color.Transparent,
+                Left = x,
+                Top = y,
+                Width = Width,
+                Height = Height
+            };
 
             movingTimer.Interval = MissleSpeed;
+
             movingTimer.Tick += new EventHandler((sender, args) =>
             {
                 switch (Direction)
@@ -73,21 +73,32 @@ namespace UlearnGame.Models
                         break;
                 }
 
-                if (MissleImage.Left < 0 ||
-                MissleImage.Top < 0 ||
-                MissleImage.Left > form.ClientSize.Width + MissleImage.Size.Width ||
-                MissleImage.Top > form.ClientSize.Height + MissleImage.Size.Height)
+                if (
+                MissleImage.Left+ MissleImage.Size.Width < 0 ||
+                MissleImage.Top+MissleImage.Size.Height < 0 ||
+                MissleImage.Left > Form.ActiveForm.ClientSize.Width + MissleImage.Size.Width ||
+                MissleImage.Top > Form.ActiveForm.ClientSize.Height + MissleImage.Size.Height)
                 {
+                    Direction = Direction.None;
                     movingTimer.Stop();
-                    movingTimer.Dispose();
-                    MissleImage.Dispose();
-                    MissleImage = null;
-                    movingTimer = null;
                 }
-
             });
+
+        }
+
+        public void StartMissle()
+        {
+            var form = Form.ActiveForm;
+            form.Controls.Add(MissleImage);
             movingTimer.Start();
         }
+
+        public void SetCoordinates(int x, int y)
+        {
+            MissleImage.Left = x;
+            MissleImage.Top = y;
+        }
+
         private static Image RotateImage(Image img, RotateFlipType angle)
         {
 

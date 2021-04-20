@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace UlearnGame.Models
@@ -10,10 +12,11 @@ namespace UlearnGame.Models
         Down,
         Left,
         Top,
-        Right
+        Right,
+        None
     };
 
-    class Player
+    public class Player
     {
         public const int ShipSize = 50;
         private const int MissleSpeed = 6;
@@ -30,10 +33,15 @@ namespace UlearnGame.Models
         public bool IsUp { get; set; }
         public bool IsDown { get; set; }
         public PictureBox PlayerImage { get; set; } = new PictureBox();
+
         private readonly Timer shootTimer;
+
         private bool canShoot = false;
+
         private int WindowHeight { get; }
         private int WindowWidth { get; }
+
+        private readonly List<Missle> MisslePool = new List<Missle>(10);
 
         private readonly Dictionary<Direction, Image> rotations = new Dictionary<Direction, Image>();
 
@@ -47,6 +55,12 @@ namespace UlearnGame.Models
 
             for (var i = 1; i < 4; i++)
                 rotations.Add((Direction)i, RotateImage(rotations[(Direction)(i - 1)]));
+
+            for (var i = 0; i < MisslePool.Capacity; i++)
+            {
+                MisslePool.Add(new Missle(Direction.None, MissleSpeed, X, Y));
+            }
+
             shootTimer = new Timer
             {
                 Interval = 250
@@ -86,20 +100,27 @@ namespace UlearnGame.Models
                 X -= Speed;
             }
         }
-        public Image RotateImage(Image img)
+        private Image RotateImage(Image img)
         {
             var bmp = new Bitmap(img);
             bmp.RotateFlip(RotateFlipType.Rotate90FlipNone);
             return bmp;
         }
 
-        public void Shoot(Form form)
+        public void Shoot()
         {
             if (canShoot == true)
             {
-                new Missle(form, CurrentDirection, MissleSpeed, X, Y);
-                canShoot = false;
-                shootTimer.Start();
+                var current = MisslePool.FirstOrDefault(missle => missle.Direction == Direction.None);
+                if (current != null)
+                {
+                   
+                    current.Direction = CurrentDirection;
+                    current.SetCoordinates(X, Y);
+                    current.StartMissle();
+                    canShoot = false;
+                    shootTimer.Start();
+                }
             }
         }
 
