@@ -10,6 +10,7 @@ namespace UlearnGame.Interfaces
         Vector GetPosition();
         public void Shoot();
         public void MoveToPoint(Vector position);
+        public void MoveFromPoint(Vector position);
 
         public Image GetImage();
     }

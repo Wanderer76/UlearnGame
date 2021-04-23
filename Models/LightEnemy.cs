@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -12,7 +13,7 @@ namespace UlearnGame.Models
     {
         private const int LightEnemySize = 50;
 
-        public int Speed { get; set; } = 5;
+        public int Speed { get; set; } = 2;
 
         public int Damage { get; set; } = 1;
         private Vector Position;
@@ -23,7 +24,9 @@ namespace UlearnGame.Models
 
         private Dictionary<Direction, Image> EnemyRotations;
 
-        public LightEnemy(Image image,Form form)
+        private readonly int randDistance;
+
+        public LightEnemy(Image image, Form form)
         {
             Enemy = new PictureBox();
             Enemy.Size = new Size(LightEnemySize, LightEnemySize);
@@ -34,7 +37,8 @@ namespace UlearnGame.Models
             for (var i = 1; i < 4; i++)
                 EnemyRotations.Add((Direction)i, EnemyRotations[(Direction)(i - 1)].RotateImage());
             Random random = new Random();
-            Position = new Vector(random.Next(-100, form.ClientSize.Width), random.Next(-100, form.ClientSize.Height));
+            Position = new Vector(random.Next(-100, form.ClientSize.Width), -10);
+            randDistance = random.Next(LightEnemySize, 200);
         }
 
         public void Shoot()
@@ -44,32 +48,61 @@ namespace UlearnGame.Models
 
         public void MoveToPoint(Vector playerPosition)
         {
-            int distance = 200;
+            int distance = 120;
 
             if (playerPosition.Distance(Position) > distance)
-            { 
-                if (playerPosition.X > Position.X )
+            {
+
+                if (playerPosition.X > Position.X)
                 {
+
+                    //Enemy.Image = EnemyRotations[Direction.Right];
                     Position.X += Speed;
                 }
-                if (playerPosition.X < Position.X )
+                if (playerPosition.X < Position.X)
                 {
+                    //  Enemy.Image = EnemyRotations[Direction.Left];
+
                     Position.X -= Speed;
                 }
-                if (playerPosition.Y > Position.Y)
+                if (playerPosition.Y > Position.Y && Position.Y < (Form.ActiveForm.ClientSize.Height / 2 -randDistance))
                 {
+                    Enemy.Image = EnemyRotations[Direction.Down];
                     Position.Y += Speed;
                 }
-                if (playerPosition.Y < Position.Y )
+                if (playerPosition.Y < Position.Y)
                 {
+                    //Enemy.Image = EnemyRotations[Direction.Top];
+
                     Position.Y -= Speed;
                 }
             }
+            Debug.WriteLine($"Enemy Position - {Position.X}:{Position.Y}\n Player Position - {playerPosition.X}:{playerPosition.Y}");
         }
 
         public Vector GetPosition() => Position;
 
         public Image GetImage() => Enemy.Image;
+
+        public void MoveFromPoint(Vector position)
+        {
+            if (position.X > Position.X)
+            {
+                Position.X -= Speed;
+            }
+            if (position.X < Position.X)
+            {
+                Position.X += Speed;
+            }
+            /* if (position.Y > Position.Y)
+             {
+                 Position.Y -= Speed;
+             }
+             if (position.Y < Position.Y)
+             {
+                 Position.Y += Speed;
+             }*/
+        }
 
     }
 }

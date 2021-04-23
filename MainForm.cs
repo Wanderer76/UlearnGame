@@ -14,6 +14,7 @@ namespace UlearnGame
         private Timer updateTimer;
         private List<IEnemy> enemies;
 
+        private const int EnemyCount = 5;
 
         public MainForm()
         {
@@ -30,9 +31,18 @@ namespace UlearnGame
             updateTimer.Tick += (sender, args) =>
             {
                 mainPlayer.MakeMove();
-                foreach (var enemy in enemies)
+                for (int i = 0; i < enemies.Count; i++)
                 {
-                    enemy.MoveToPoint(mainPlayer.Position);
+                    for (var j = 0; j < enemies.Count; j++)
+                    {
+                        if (i != j)
+                        {
+                            if (enemies[i].GetPosition().Distance(enemies[j].GetPosition()) < 100)
+                                enemies[i].MoveFromPoint(enemies[j].GetPosition());
+
+                        }
+                    }
+                            enemies[i].MoveToPoint(mainPlayer.Position);
                 }
 
                 Invalidate();
@@ -49,7 +59,7 @@ namespace UlearnGame
             };
 
             enemies = new List<IEnemy>();
-            for (var i = 0; i < 2; i++)
+            for (var i = 0; i < EnemyCount; i++)
             {
                 enemies.Add(new LightEnemy(Properties.Resources.spaceShips_004, this));
             }

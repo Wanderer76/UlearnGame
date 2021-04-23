@@ -74,24 +74,24 @@ namespace UlearnGame.Models
             }
             if (IsDown && Position.Y + PlayerImage.Height < WindowHeight)
             {
-                CurrentDirection = Direction.Down;
-                PlayerImage.Image = PlayerRotations[Direction.Down];
+              //  CurrentDirection = Direction.Down;
+              //  PlayerImage.Image = PlayerRotations[Direction.Down];
                 Position.Y += Speed;
             }
             if (IsRight && Position.X + PlayerImage.Width < WindowWidth)
             {
-                CurrentDirection = Direction.Right;
-                PlayerImage.Image = PlayerRotations[Direction.Right];
+              //  CurrentDirection = Direction.Right;
+             //   PlayerImage.Image = PlayerRotations[Direction.Right];
                 Position.X += Speed;
             }
             if (IsLeft && Position.X > 0)
             {
-                CurrentDirection = Direction.Left;
-                PlayerImage.Image = PlayerRotations[Direction.Left];
+             //   CurrentDirection = Direction.Left;
+             //   PlayerImage.Image = PlayerRotations[Direction.Left];
                 Position.X -= Speed;
             }
         }
-       
+     
         public void Shoot()
         {
             if (canShoot == true)
