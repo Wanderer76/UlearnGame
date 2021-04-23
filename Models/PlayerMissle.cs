@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using UlearnGame.Interfaces;
+using UlearnGame.Utilities;
 
 namespace UlearnGame.Models
 {
-    public class Missle
+    public class PlayerMissle : IMissle
     {
         private const int Width = 25;
         private const int Height = 30;
 
-        public int Damage { get; }
-
-        public int MissleSpeed { get; }
-
+        public int Damage { get; set; }
+        public int MissleSpeed { get; set; }
         public Direction Direction { get; set; }
-
         public PictureBox MissleImage { get; private set; }
-
+        
         private readonly Timer movingTimer = new Timer();
+
 
         private Dictionary<Direction, Image> images = new Dictionary<Direction, Image>()
         {
@@ -29,7 +29,7 @@ namespace UlearnGame.Models
             {Direction.Right,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate90FlipNone)},
         };
 
-        public Missle(Direction direction, int missleSpeed, int x, int y)
+        public PlayerMissle(Direction direction, int missleSpeed, int x, int y)
         {
             Direction = direction;
             MissleSpeed = missleSpeed;
@@ -41,8 +41,8 @@ namespace UlearnGame.Models
                 BackColor = Color.Transparent,
                 Left = x,
                 Top = y,
-                Width = Width,
-                Height = Height
+                Width = (direction == Direction.Top || direction == Direction.Down) ? Width : Height,
+                Height = (direction == Direction.Top || direction == Direction.Down) ? Width: Height
             };
 
             movingTimer.Interval = MissleSpeed;
@@ -57,8 +57,7 @@ namespace UlearnGame.Models
                         break;
                     case Direction.Left:
                         MissleImage.Image = images[Direction.Left];
-                        MissleImage.Width = Height;
-                        MissleImage.Height = Width;
+
                         MissleImage.Left -= MissleSpeed;
                         break;
                     case Direction.Top:
@@ -66,16 +65,14 @@ namespace UlearnGame.Models
                         MissleImage.Top -= MissleSpeed;
                         break;
                     case Direction.Right:
-                        MissleImage.Width = Height;
-                        MissleImage.Height = Width;
                         MissleImage.Image = images[Direction.Right];
                         MissleImage.Left += MissleSpeed;
                         break;
                 }
 
                 if (
-                MissleImage.Left+ MissleImage.Size.Width < 0 ||
-                MissleImage.Top+MissleImage.Size.Height < 0 ||
+                MissleImage.Left + MissleImage.Size.Width < 0 ||
+                MissleImage.Top + MissleImage.Size.Height < 0 ||
                 MissleImage.Left > Form.ActiveForm.ClientSize.Width + MissleImage.Size.Width ||
                 MissleImage.Top > Form.ActiveForm.ClientSize.Height + MissleImage.Size.Height)
                 {
@@ -101,7 +98,6 @@ namespace UlearnGame.Models
 
         private static Image RotateImage(Image img, RotateFlipType angle)
         {
-
             var bmp = new Bitmap(img);
 
             using (var hraph = Graphics.FromImage(bmp))

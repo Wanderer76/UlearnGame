@@ -1,51 +1,67 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using UlearnGame.Interfaces;
 using UlearnGame.Models;
+using UlearnGame.Utilities;
 
 namespace UlearnGame
 {
     public partial class MainForm : Form
     {
         private Player mainPlayer;
-        private readonly Timer updateTimer;
-       
+        private Timer updateTimer;
+        private List<IEnemy> enemies;
+
 
         public MainForm()
         {
             DoubleBuffered = true;
             Graphics graphics = CreateGraphics();
             InitializeComponent();
-            mainPlayer = new Player(Properties.Resources.spaceShips_001, ClientSize.Height, ClientSize.Width)
-            {
-                X = ClientSize.Width / 2,
-                Y = ClientSize.Height / 2
-            };
             Init();
 
             updateTimer = new Timer
             {
-                Interval = 10
+                Interval = 15
             };
 
             updateTimer.Tick += (sender, args) =>
             {
                 mainPlayer.MakeMove();
+                foreach (var enemy in enemies)
+                {
+                    enemy.MoveToPoint(mainPlayer.Position);
+                }
+
                 Invalidate();
             };
             updateTimer.Start();
-           
+
         }
 
         private void Init()
         {
-            
+            mainPlayer = new Player(Properties.Resources.spaceShips_001, ClientSize.Height, ClientSize.Width)
+            {
+                Position = new Vector(ClientSize.Width / 2, ClientSize.Height / 2)
+            };
+
+            enemies = new List<IEnemy>();
+            for (var i = 0; i < 2; i++)
+            {
+                enemies.Add(new LightEnemy(Properties.Resources.spaceShips_004, this));
+            }
+
 
             KeyDown += new KeyEventHandler(OnKeyDown);
             KeyUp += new KeyEventHandler(OnKeyUp);
             Paint += (sender, args) =>
             {
-                args.Graphics.DrawImage(mainPlayer.PlayerImage.Image, new Point(mainPlayer.X, mainPlayer.Y));
+                args.Graphics.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.Position.ToPoint());
+                foreach (var enemy in enemies)
+                    args.Graphics.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
             };
         }
 

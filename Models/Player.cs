@@ -1,31 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using UlearnGame.Utilities;
 
 namespace UlearnGame.Models
 {
 
-    public enum Direction
-    {
-        Down,
-        Left,
-        Top,
-        Right,
-        None
-    };
-
     public class Player
     {
         public const int ShipSize = 50;
-        private const int MissleSpeed = 6;
 
         public int Health { get; set; } = 100;
         public int Armor { get; set; } = 50;
         public int Speed { get; set; } = 5;
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int Damage { get; set; } = 10;
+        
+        private int MissleSpeed = 6;
+
+        public Vector Position;
 
         public Direction CurrentDirection { get; set; }
         public bool IsRight { get; set; }
@@ -35,31 +28,29 @@ namespace UlearnGame.Models
         public PictureBox PlayerImage { get; set; } = new PictureBox();
 
         private readonly Timer shootTimer;
-
         private bool canShoot = false;
 
         private int WindowHeight { get; }
         private int WindowWidth { get; }
 
-        private readonly List<Missle> MisslePool = new List<Missle>(10);
+        private readonly List<PlayerMissle> MisslePool = new List<PlayerMissle>(5);
 
-        private readonly Dictionary<Direction, Image> rotations = new Dictionary<Direction, Image>();
+        private readonly Dictionary<Direction, Image> PlayerRotations = new Dictionary<Direction, Image>();
 
 
         public Player(Image image, int height, int width)
         {
             WindowHeight = height;
             WindowWidth = width;
+            PlayerImage.Size = new Size(ShipSize, ShipSize);
             PlayerImage.Image = new Bitmap(image, ShipSize, ShipSize);
-            rotations[Direction.Down] = PlayerImage.Image;
+            PlayerRotations[Direction.Down] = PlayerImage.Image;
 
             for (var i = 1; i < 4; i++)
-                rotations.Add((Direction)i, RotateImage(rotations[(Direction)(i - 1)]));
+                PlayerRotations.Add((Direction)i, PlayerRotations[(Direction)(i - 1)].RotateImage());
 
             for (var i = 0; i < MisslePool.Capacity; i++)
-            {
-                MisslePool.Add(new Missle(Direction.None, MissleSpeed, X, Y));
-            }
+                MisslePool.Add(new PlayerMissle(Direction.None, MissleSpeed, Position.X, Position.Y));
 
             shootTimer = new Timer
             {
@@ -75,54 +66,50 @@ namespace UlearnGame.Models
 
         public void MakeMove()
         {
-            if (IsUp && Y > 10)
+            if (IsUp && Position.Y > 0)
             {
                 CurrentDirection = Direction.Top;
-                PlayerImage.Image = rotations[Direction.Top];
-                Y -= Speed;
+                PlayerImage.Image = PlayerRotations[Direction.Top];
+                Position.Y -= Speed;
             }
-            if (IsDown && Y + PlayerImage.Height < WindowHeight)
+            if (IsDown && Position.Y + PlayerImage.Height < WindowHeight)
             {
                 CurrentDirection = Direction.Down;
-                PlayerImage.Image = rotations[Direction.Down];
-                Y += Speed;
+                PlayerImage.Image = PlayerRotations[Direction.Down];
+                Position.Y += Speed;
             }
-            if (IsRight && X + PlayerImage.Width < WindowWidth)
+            if (IsRight && Position.X + PlayerImage.Width < WindowWidth)
             {
                 CurrentDirection = Direction.Right;
-                PlayerImage.Image = rotations[Direction.Right];
-                X += Speed;
+                PlayerImage.Image = PlayerRotations[Direction.Right];
+                Position.X += Speed;
             }
-            if (IsLeft && X > 0)
+            if (IsLeft && Position.X > 0)
             {
                 CurrentDirection = Direction.Left;
-                PlayerImage.Image = rotations[Direction.Left];
-                X -= Speed;
+                PlayerImage.Image = PlayerRotations[Direction.Left];
+                Position.X -= Speed;
             }
         }
-        private Image RotateImage(Image img)
-        {
-            var bmp = new Bitmap(img);
-            bmp.RotateFlip(RotateFlipType.Rotate90FlipNone);
-            return bmp;
-        }
-
+       
         public void Shoot()
         {
             if (canShoot == true)
             {
-                var current = MisslePool.FirstOrDefault(missle => missle.Direction == Direction.None);
-                if (current != null)
+                var missle = MisslePool.FirstOrDefault(missle => missle.Direction == Direction.None);
+                if (missle != null)
                 {
-                   
-                    current.Direction = CurrentDirection;
-                    current.SetCoordinates(X, Y);
-                    current.StartMissle();
+
+                    missle.Direction = CurrentDirection;
+                    missle.Damage = Damage;
+                    missle.MissleSpeed = MissleSpeed;
+                    missle.SetCoordinates(Position.X, Position.Y);
+                    missle.StartMissle();
+                    MissleSpeed++;
                     canShoot = false;
                     shootTimer.Start();
                 }
             }
         }
-
     }
 }

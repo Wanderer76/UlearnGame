@@ -83,9 +83,29 @@ namespace UlearnGame.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap spaceMissiles_015 {
+            get {
+                object obj = ResourceManager.GetObject("spaceMissiles_015", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap spaceShips_001 {
             get {
                 object obj = ResourceManager.GetObject("spaceShips_001", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap spaceShips_004 {
+            get {
+                object obj = ResourceManager.GetObject("spaceShips_004", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
