@@ -52,8 +52,8 @@ namespace UlearnGame.Models
 
             movingTimer.Tick += new EventHandler((sender, args) =>
             {
-                
-                /* switch (Direction)
+
+                /*switch (Direction)
                  {
                      case Direction.Down:
                          MissleImage.Image = images[Direction.Down];
@@ -80,22 +80,15 @@ namespace UlearnGame.Models
                 MissleImage.Top + MissleImage.Size.Height < 0 ||
                 MissleImage.Left > Form.ActiveForm.ClientSize.Width + MissleImage.Size.Width ||
                 MissleImage.Top > Form.ActiveForm.ClientSize.Height + MissleImage.Size.Height)*/
-                if(Position.Y<0)
+                if (Position.Y < 0)
                 {
-                    Direction = Direction.None;
-                    movingTimer.Stop();
+                    StopMissle();
                 }
             });
 
         }
 
         public void StartMissle()
-        {
-            var form = Form.ActiveForm;
-            form.Controls.Add(MissleImage);
-            movingTimer.Start();
-        }
-        public void StartMissle(Graphics graph)
         {
             movingTimer.Start();
         }
@@ -104,8 +97,16 @@ namespace UlearnGame.Models
         {
             //MissleImage.Left = x + Width;
             //MissleImage.Top = y;
-            Position.X = x;
+            Position.X = x + Width;
             Position.Y = y;
+        }
+
+        public void StopMissle()
+        {
+            Position = new Vector(-1000, -1000);
+            Direction = Direction.None;
+            movingTimer.Stop();
+
         }
 
         private static Image RotateImage(Image img, RotateFlipType angle)
@@ -120,15 +121,6 @@ namespace UlearnGame.Models
             bmp.RotateFlip(angle);
             return bmp;
         }
-        public bool InConflict(IEnemy enemy)
-        {
-            if (enemy.GetSource().Bounds.IntersectsWith(MissleImage.Bounds))
-            {
-                return true;
-            }
-            return false;
-        }
-
         public Vector GetPosition() => Position;
     }
 }

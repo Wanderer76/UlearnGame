@@ -9,6 +9,5 @@ namespace UlearnGame.Interfaces
         public Vector GetPosition();
         public int Damage { get; set; }
         public int MissleSpeed { get; }
-        public bool InConflict(IEnemy enemy);
     }
 }

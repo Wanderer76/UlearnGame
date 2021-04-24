@@ -106,7 +106,7 @@ namespace UlearnGame.Models
                     missle.Damage = Damage;
                     missle.MissleSpeed = MissleSpeed;
                     missle.SetCoordinates(Position.X, Position.Y);
-                    missle.StartMissle(graphics);
+                    missle.StartMissle();
                     canShoot = false;
                     shootTimer.Start();
                 }

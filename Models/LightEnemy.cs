@@ -94,24 +94,23 @@ namespace UlearnGame.Models
             {
                 Position.X += Speed;
             }
-            /* if (position.Y > Position.Y)
+             if (position.Y > Position.Y)
              {
                  Position.Y -= Speed;
              }
              if (position.Y < Position.Y)
              {
                  Position.Y += Speed;
-             }*/
+             }
         }
-
+        
         public bool DeadInConflict(IEnumerable<PlayerMissle> missle)
         {
-
             foreach (var i in missle)
             {
-                if(i.Position.Distance(Position) < 50)
+                if (i.Position.Distance(Position) < LightEnemySize)
                 {
-                    Debug.WriteLine($"true");
+                    i.StopMissle();
                     return true;
 
                 }

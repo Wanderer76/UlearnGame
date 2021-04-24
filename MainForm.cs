@@ -7,6 +7,7 @@ using UlearnGame.Models;
 using UlearnGame.Utilities;
 using System.Linq;
 using System.Diagnostics;
+using UlearnGame.Controllers;
 
 namespace UlearnGame
 {
@@ -14,7 +15,8 @@ namespace UlearnGame
     {
         private Player mainPlayer;
         private Timer updateTimer;
-        private List<IEnemy> enemies;
+        //private List<IEnemy> enemies;
+        private EnemyController enemies;
         public Graphics graphics;
 
         private const int EnemyCount = 5;
@@ -33,50 +35,38 @@ namespace UlearnGame
 
             updateTimer.Tick += (sender, args) =>
             {
-
-
-
                 mainPlayer.MakeMove();
+                enemies.MoveEnemies(mainPlayer);
+                enemies.CheckForHit(mainPlayer);
 
-                MoveEnemy();
+                //for (int i = 0; i < enemies.Count; i++)
+                //{
 
-
-                var deadEnemies = new List<int>();
-                for (int i = 0; i < enemies.Count; i++)
-                {
-                    IEnemy enemy = enemies[i];
-                    if (enemy.DeadInConflict(mainPlayer.MisslePool))
-                        deadEnemies.Add(i);
-                }
-                if (deadEnemies.Count > 0)
-                {
-                    Debug.WriteLine($"Count - {deadEnemies.Count}");
-                    for (var i = deadEnemies[0]; i < deadEnemies.Count; i++)
-                        enemies.RemoveAt(i);
-                }
-
-
+                //    if (enemies[i].DeadInConflict(mainPlayer.MisslePool))
+                //        enemies.RemoveAt(i);
+                //}
+                
                 Invalidate();
             };
             updateTimer.Start();
 
         }
 
-        private void MoveEnemy()
-        {
-            for (int i = 0; i < enemies.Count; i++)
-            {
-                for (var j = 0; j < enemies.Count; j++)
-                {
-                    if (i == j)
-                        continue;
+        //private void MoveEnemy()
+        //{
+        //    for (int i = 0; i < enemies.Count; i++)
+        //    {
+        //        for (var j = 0; j < enemies.Count; j++)
+        //        {
+        //            if (i == j)
+        //                continue;
 
-                    if (enemies[i].GetPosition().Distance(enemies[j].GetPosition()) < 100)
-                        enemies[i].MoveFromPoint(enemies[j].GetPosition());
-                }
-                enemies[i].MoveToPoint(mainPlayer.Position);
-            }
-        }
+        //            if (enemies[i].GetPosition().Distance(enemies[j].GetPosition()) < 100)
+        //                enemies[i].MoveFromPoint(enemies[j].GetPosition());
+        //        }
+        //        enemies[i].MoveToPoint(mainPlayer.Position);
+        //    }
+        //}
 
         private void Init()
         {
@@ -85,11 +75,8 @@ namespace UlearnGame
                 Position = new Vector(ClientSize.Width / 2, ClientSize.Height / 2)
             };
 
-            enemies = new List<IEnemy>();
-            for (var i = 0; i < EnemyCount; i++)
-            {
-                enemies.Add(new LightEnemy(Properties.Resources.spaceShips_004, this));
-            }
+            enemies = new EnemyController(EnemyCount,this);
+            
 
 
             KeyDown += new KeyEventHandler(OnKeyDown);
@@ -97,7 +84,7 @@ namespace UlearnGame
             Paint += (sender, args) =>
             {
                 args.Graphics.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.Position.ToPoint());
-                foreach (var enemy in enemies)
+                foreach (var enemy in enemies.Enemies)
                     args.Graphics.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
 
                 foreach (var missle in mainPlayer.MisslePool)
