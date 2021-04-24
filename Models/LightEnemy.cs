@@ -12,10 +12,12 @@ namespace UlearnGame.Models
     class LightEnemy : IEnemy
     {
         private const int LightEnemySize = 50;
-
         public int Speed { get; set; } = 2;
 
         public int Damage { get; set; } = 1;
+
+        public int health = 30;
+
         private Vector Position;
 
         public Direction Direction { get; set; }
@@ -111,6 +113,7 @@ namespace UlearnGame.Models
                 if (i.Position.Distance(Position) < LightEnemySize)
                 {
                     i.StopMissle();
+                    health -= i.Damage;
                     return true;
 
                 }
@@ -118,9 +121,13 @@ namespace UlearnGame.Models
             return false;
         }
 
-        public PictureBox GetSource()
+        public PictureBox GetSource() => Enemy;
+
+        public int GetHealth() => health;
+
+        public void DamageToHealth(int damage)
         {
-            return Enemy;
+            health -= damage;
         }
     }
 }

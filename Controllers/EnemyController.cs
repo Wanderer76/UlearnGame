@@ -47,11 +47,14 @@ namespace UlearnGame.Controllers
 
                 if (Enemies[i].DeadInConflict(mainPlayer.MisslePool))
                 {
-                    Enemies.RemoveAt(i);
-                    deadCount++;
+                    if (Enemies[i].GetHealth() <= 0)
+                    {
+                        Enemies.RemoveAt(i);
+                        deadCount++;
+                    }
                 }
             }
-            if(deadCount > 0)
+            if (deadCount > 0)
             {
                 for (var i = 0; i < deadCount; i++)
                     Enemies.Add(new LightEnemy(Properties.Resources.spaceShips_004, activeForm));

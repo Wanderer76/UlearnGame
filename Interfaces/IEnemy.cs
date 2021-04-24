@@ -14,8 +14,12 @@ namespace UlearnGame.Interfaces
         public void Shoot();
         public void MoveToPoint(Vector position);
         public void MoveFromPoint(Vector position);
+        public void DamageToHealth(int damage);
         public Image GetImage();
         public PictureBox GetSource();
-        public bool DeadInConflict(IEnumerable<PlayerMissle>missle);
+        public bool DeadInConflict(IEnumerable<PlayerMissle> missle);
+        public int GetHealth();
+
+
     }
 }
