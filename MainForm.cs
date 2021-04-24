@@ -41,11 +41,19 @@ namespace UlearnGame
                 MoveEnemy();
 
 
-                var alivedEnemies = new List<IEnemy>();
-                foreach (var enemy in enemies)
-                    enemy.DeadInConflict(mainPlayer.MisslePool);
-                //if (alivedEnemies.Count > 0)
-                Debug.WriteLine($"Count - {alivedEnemies.Count}");
+                var deadEnemies = new List<int>();
+                for (int i = 0; i < enemies.Count; i++)
+                {
+                    IEnemy enemy = enemies[i];
+                    if (enemy.DeadInConflict(mainPlayer.MisslePool))
+                        deadEnemies.Add(i);
+                }
+                if (deadEnemies.Count > 0)
+                {
+                    Debug.WriteLine($"Count - {deadEnemies.Count}");
+                    for (var i = deadEnemies[0]; i < deadEnemies.Count; i++)
+                        enemies.RemoveAt(i);
+                }
 
 
                 Invalidate();

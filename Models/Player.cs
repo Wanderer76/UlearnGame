@@ -52,7 +52,7 @@ namespace UlearnGame.Models
 
 
             for (var i = 0; i < MisslePool.Capacity; i++)
-                MisslePool.Add(new PlayerMissle(Direction.None, MissleSpeed, -100, -100));
+                MisslePool.Add(new PlayerMissle(Direction.None, MissleSpeed, -2000, -2000));
 
             shootTimer = new Timer
             {

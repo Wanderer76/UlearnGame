@@ -109,8 +109,7 @@ namespace UlearnGame.Models
 
             foreach (var i in missle)
             {
-                //if (i.MissleImage.Bounds.IntersectsWith(Enemy.Bounds))
-                if(i.Position.Distance(Position) < 100)
+                if(i.Position.Distance(Position) < 50)
                 {
                     Debug.WriteLine($"true");
                     return true;
