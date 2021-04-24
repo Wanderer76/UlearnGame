@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using UlearnGame.Interfaces;
 using UlearnGame.Utilities;
 
 namespace UlearnGame.Models
@@ -15,8 +16,8 @@ namespace UlearnGame.Models
         public int Armor { get; set; } = 50;
         public int Speed { get; set; } = 5;
         public int Damage { get; set; } = 10;
-        
-        private int MissleSpeed = 6;
+
+        private int MissleSpeed = 5;
 
         public Vector Position;
 
@@ -33,7 +34,7 @@ namespace UlearnGame.Models
         private int WindowHeight { get; }
         private int WindowWidth { get; }
 
-        private readonly List<PlayerMissle> MisslePool = new List<PlayerMissle>(5);
+        public readonly List<PlayerMissle> MisslePool = new List<PlayerMissle>(5);
 
         private readonly Dictionary<Direction, Image> PlayerRotations = new Dictionary<Direction, Image>();
 
@@ -49,8 +50,9 @@ namespace UlearnGame.Models
             for (var i = 1; i < 4; i++)
                 PlayerRotations.Add((Direction)i, PlayerRotations[(Direction)(i - 1)].RotateImage());
 
+
             for (var i = 0; i < MisslePool.Capacity; i++)
-                MisslePool.Add(new PlayerMissle(Direction.None, MissleSpeed, Position.X, Position.Y));
+                MisslePool.Add(new PlayerMissle(Direction.None, MissleSpeed, -100, -100));
 
             shootTimer = new Timer
             {
@@ -61,7 +63,8 @@ namespace UlearnGame.Models
             {
                 canShoot = true;
                 shootTimer.Stop();
-            }; shootTimer.Start();
+            }; 
+            shootTimer.Start();
         }
 
         public void MakeMove()
@@ -92,20 +95,18 @@ namespace UlearnGame.Models
             }
         }
      
-        public void Shoot()
+        public void Shoot(Graphics graphics)
         {
             if (canShoot == true)
             {
                 var missle = MisslePool.FirstOrDefault(missle => missle.Direction == Direction.None);
                 if (missle != null)
                 {
-
                     missle.Direction = CurrentDirection;
                     missle.Damage = Damage;
                     missle.MissleSpeed = MissleSpeed;
                     missle.SetCoordinates(Position.X, Position.Y);
-                    missle.StartMissle();
-                    MissleSpeed++;
+                    missle.StartMissle(graphics);
                     canShoot = false;
                     shootTimer.Start();
                 }

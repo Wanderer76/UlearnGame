@@ -3,10 +3,12 @@ using UlearnGame.Utilities;
 
 namespace UlearnGame.Interfaces
 {
-    interface IMissle
+   public interface IMissle
     {
         public Direction Direction { get; set; }
+        public Vector GetPosition();
         public int Damage { get; set; }
         public int MissleSpeed { get; }
+        public bool InConflict(IEnemy enemy);
     }
 }

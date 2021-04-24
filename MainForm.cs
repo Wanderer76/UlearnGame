@@ -5,6 +5,8 @@ using System.Windows.Forms;
 using UlearnGame.Interfaces;
 using UlearnGame.Models;
 using UlearnGame.Utilities;
+using System.Linq;
+using System.Diagnostics;
 
 namespace UlearnGame
 {
@@ -13,14 +15,15 @@ namespace UlearnGame
         private Player mainPlayer;
         private Timer updateTimer;
         private List<IEnemy> enemies;
+        public Graphics graphics;
 
         private const int EnemyCount = 5;
 
         public MainForm()
         {
             DoubleBuffered = true;
-            Graphics graphics = CreateGraphics();
             InitializeComponent();
+            graphics = CreateGraphics();
             Init();
 
             updateTimer = new Timer
@@ -30,25 +33,41 @@ namespace UlearnGame
 
             updateTimer.Tick += (sender, args) =>
             {
-                mainPlayer.MakeMove();
-                for (int i = 0; i < enemies.Count; i++)
-                {
-                    for (var j = 0; j < enemies.Count; j++)
-                    {
-                        if (i != j)
-                        {
-                            if (enemies[i].GetPosition().Distance(enemies[j].GetPosition()) < 100)
-                                enemies[i].MoveFromPoint(enemies[j].GetPosition());
 
-                        }
-                    }
-                            enemies[i].MoveToPoint(mainPlayer.Position);
-                }
+
+
+                mainPlayer.MakeMove();
+
+                MoveEnemy();
+
+
+                var alivedEnemies = new List<IEnemy>();
+                foreach (var enemy in enemies)
+                    enemy.DeadInConflict(mainPlayer.MisslePool);
+                //if (alivedEnemies.Count > 0)
+                Debug.WriteLine($"Count - {alivedEnemies.Count}");
+
 
                 Invalidate();
             };
             updateTimer.Start();
 
+        }
+
+        private void MoveEnemy()
+        {
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                for (var j = 0; j < enemies.Count; j++)
+                {
+                    if (i == j)
+                        continue;
+
+                    if (enemies[i].GetPosition().Distance(enemies[j].GetPosition()) < 100)
+                        enemies[i].MoveFromPoint(enemies[j].GetPosition());
+                }
+                enemies[i].MoveToPoint(mainPlayer.Position);
+            }
         }
 
         private void Init()
@@ -72,6 +91,10 @@ namespace UlearnGame
                 args.Graphics.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.Position.ToPoint());
                 foreach (var enemy in enemies)
                     args.Graphics.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
+
+                foreach (var missle in mainPlayer.MisslePool)
+                    if (missle.Direction != Direction.None)
+                        args.Graphics.DrawImage(missle.MissleImage.Image, missle.Position.ToPoint());
             };
         }
 
@@ -97,7 +120,8 @@ namespace UlearnGame
             }
             if (keyCode == Keys.Space)
             {
-                mainPlayer.Shoot();
+                mainPlayer.Shoot(graphics);
+
             }
         }
 

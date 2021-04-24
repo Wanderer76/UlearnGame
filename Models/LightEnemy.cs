@@ -65,7 +65,7 @@ namespace UlearnGame.Models
 
                     Position.X -= Speed;
                 }
-                if (playerPosition.Y > Position.Y && Position.Y < (Form.ActiveForm.ClientSize.Height / 2 -randDistance))
+                if (playerPosition.Y > Position.Y && Position.Y < (Form.ActiveForm.ClientSize.Height / 2 - randDistance))
                 {
                     Enemy.Image = EnemyRotations[Direction.Down];
                     Position.Y += Speed;
@@ -77,7 +77,7 @@ namespace UlearnGame.Models
                     Position.Y -= Speed;
                 }
             }
-            Debug.WriteLine($"Enemy Position - {Position.X}:{Position.Y}\n Player Position - {playerPosition.X}:{playerPosition.Y}");
+            // Debug.WriteLine($"Enemy Position - {Position.X}:{Position.Y}\n Player Position - {playerPosition.X}:{playerPosition.Y}");
         }
 
         public Vector GetPosition() => Position;
@@ -104,5 +104,25 @@ namespace UlearnGame.Models
              }*/
         }
 
+        public bool DeadInConflict(IEnumerable<PlayerMissle> missle)
+        {
+
+            foreach (var i in missle)
+            {
+                //if (i.MissleImage.Bounds.IntersectsWith(Enemy.Bounds))
+                if(i.Position.Distance(Position) < 100)
+                {
+                    Debug.WriteLine($"true");
+                    return true;
+
+                }
+            }
+            return false;
+        }
+
+        public PictureBox GetSource()
+        {
+            return Enemy;
+        }
     }
 }

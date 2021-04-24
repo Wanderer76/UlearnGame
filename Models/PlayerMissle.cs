@@ -10,20 +10,21 @@ namespace UlearnGame.Models
 {
     public class PlayerMissle : IMissle
     {
-        private const int Width = 25;
-        private const int Height = 30;
+        private const int Width = 20;
+        private const int Height = 25;
 
         public int Damage { get; set; }
         public int MissleSpeed { get; set; }
         public Direction Direction { get; set; }
         public PictureBox MissleImage { get; private set; }
-        
+        public Vector Position;
+
         private readonly Timer movingTimer = new Timer();
 
 
         private Dictionary<Direction, Image> images = new Dictionary<Direction, Image>()
         {
-            {Direction.Top,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.RotateNoneFlipNone)},
+            {Direction.Top,new Bitmap(Properties.Resources.spaceMissiles_013,Width,Height)},
             {Direction.Down,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate180FlipNone)},
             {Direction.Left,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate270FlipNone)},
             {Direction.Right,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate90FlipNone)},
@@ -34,47 +35,52 @@ namespace UlearnGame.Models
             Direction = direction;
             MissleSpeed = missleSpeed;
 
+            Position.X = x;
+            Position.Y = y;
 
             MissleImage = new PictureBox
             {
-                SizeMode = PictureBoxSizeMode.StretchImage,
                 BackColor = Color.Transparent,
-                Left = x,
-                Top = y,
-                Width = (direction == Direction.Top || direction == Direction.Down) ? Width : Height,
-                Height = (direction == Direction.Top || direction == Direction.Down) ? Width: Height
+                //Left = x + Width,
+                //Top = y,
+                Width = Width,
+                Height = Height
             };
+            MissleImage.Image = images[Direction.Top];
 
             movingTimer.Interval = MissleSpeed;
 
             movingTimer.Tick += new EventHandler((sender, args) =>
             {
-                switch (Direction)
-                {
-                    case Direction.Down:
-                        MissleImage.Image = images[Direction.Down];
-                        MissleImage.Top += MissleSpeed;
-                        break;
-                    case Direction.Left:
-                        MissleImage.Image = images[Direction.Left];
+                
+                /* switch (Direction)
+                 {
+                     case Direction.Down:
+                         MissleImage.Image = images[Direction.Down];
+                         MissleImage.Top += MissleSpeed;
+                         break;
+                     case Direction.Left:
+                         MissleImage.Image = images[Direction.Left];
 
-                        MissleImage.Left -= MissleSpeed;
-                        break;
-                    case Direction.Top:
-                        MissleImage.Image = images[Direction.Top];
-                        MissleImage.Top -= MissleSpeed;
-                        break;
-                    case Direction.Right:
-                        MissleImage.Image = images[Direction.Right];
-                        MissleImage.Left += MissleSpeed;
-                        break;
-                }
+                         MissleImage.Left -= MissleSpeed;
+                         break;
+                     case Direction.Top:
+                         MissleImage.Image = images[Direction.Top];
+                         break;
+                     case Direction.Right:
+                         MissleImage.Image = images[Direction.Right];
+                         MissleImage.Left += MissleSpeed;
+                         break;
+                 }*/
+                Position.Y -= MissleSpeed;
+                Direction = Direction.Top;
 
-                if (
+                /*if (
                 MissleImage.Left + MissleImage.Size.Width < 0 ||
                 MissleImage.Top + MissleImage.Size.Height < 0 ||
                 MissleImage.Left > Form.ActiveForm.ClientSize.Width + MissleImage.Size.Width ||
-                MissleImage.Top > Form.ActiveForm.ClientSize.Height + MissleImage.Size.Height)
+                MissleImage.Top > Form.ActiveForm.ClientSize.Height + MissleImage.Size.Height)*/
+                if(Position.Y<0)
                 {
                     Direction = Direction.None;
                     movingTimer.Stop();
@@ -89,24 +95,40 @@ namespace UlearnGame.Models
             form.Controls.Add(MissleImage);
             movingTimer.Start();
         }
+        public void StartMissle(Graphics graph)
+        {
+            movingTimer.Start();
+        }
 
         public void SetCoordinates(int x, int y)
         {
-            MissleImage.Left = x;
-            MissleImage.Top = y;
+            //MissleImage.Left = x + Width;
+            //MissleImage.Top = y;
+            Position.X = x;
+            Position.Y = y;
         }
 
         private static Image RotateImage(Image img, RotateFlipType angle)
         {
             var bmp = new Bitmap(img);
 
-            using (var hraph = Graphics.FromImage(bmp))
+            using (var graph = Graphics.FromImage(bmp))
             {
-                hraph.Clear(Color.Transparent);
-                hraph.DrawImage(img, 0, 0, img.Width, img.Height);
+                graph.Clear(Color.Transparent);
+                graph.DrawImage(img, 0, 0, img.Width, img.Height);
             }
             bmp.RotateFlip(angle);
             return bmp;
         }
+        public bool InConflict(IEnemy enemy)
+        {
+            if (enemy.GetSource().Bounds.IntersectsWith(MissleImage.Bounds))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public Vector GetPosition() => Position;
     }
 }
