@@ -10,7 +10,7 @@ namespace UlearnGame.Controllers
     class EnemyController
     {
         public List<IEnemy> Enemies { get; private set; }
-        private Form activeForm;
+        private readonly Form activeForm;
 
         public EnemyController(int count, Form form)
         {
@@ -18,7 +18,7 @@ namespace UlearnGame.Controllers
             activeForm = form;
             for (var i = 0; i < count; i++)
             {
-                Enemies.Add(new LightEnemy(Properties.Resources.spaceShips_004, activeForm));
+                Enemies.Add(new LightEnemy(activeForm));
             }
         }
 
@@ -57,7 +57,7 @@ namespace UlearnGame.Controllers
             if (deadCount > 0)
             {
                 for (var i = 0; i < deadCount; i++)
-                    Enemies.Add(new LightEnemy(Properties.Resources.spaceShips_004, activeForm));
+                    Enemies.Add(new LightEnemy(activeForm));
             }
         }
 

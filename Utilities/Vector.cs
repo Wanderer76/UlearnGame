@@ -7,11 +7,13 @@ namespace UlearnGame.Utilities
     {
         public int X { get; set; }
         public int Y { get; set; }
+        public Direction Direction { get; set; }
 
         public Vector(int x, int y)
         {
             X = x;
             Y = y;
+            Direction = Direction.None;
         }
 
         public void SetPosition(Vector vec)

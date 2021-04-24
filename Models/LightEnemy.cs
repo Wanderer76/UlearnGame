@@ -13,33 +13,36 @@ namespace UlearnGame.Models
     {
         private const int LightEnemySize = 50;
         public int Speed { get; set; } = 2;
-
         public int Damage { get; set; } = 1;
-
-        public int health = 30;
-
-        private Vector Position;
-
         public Direction Direction { get; set; }
 
-        private PictureBox Enemy;
-
+        private Vector Position;
+        private readonly PictureBox Enemy;
         private Dictionary<Direction, Image> EnemyRotations;
-
+        public int health = 30;
         private readonly int randDistance;
 
-        public LightEnemy(Image image, Form form)
-        {
-            Enemy = new PictureBox();
-            Enemy.Size = new Size(LightEnemySize, LightEnemySize);
-            Enemy.Image = new Bitmap(image, LightEnemySize, LightEnemySize);
+        private readonly Form activeForm;
 
-            EnemyRotations = new Dictionary<Direction, Image>();
-            EnemyRotations.Add(Direction.Down, Enemy.Image);
+        public LightEnemy(Form form)
+        {
+            Enemy = new PictureBox
+            {
+                Size = new Size(LightEnemySize, LightEnemySize),
+                Image = new Bitmap(Properties.Resources.spaceShips_004, LightEnemySize, LightEnemySize)
+            };
+
+            EnemyRotations = new Dictionary<Direction, Image>
+            {
+                { Direction.Down, Enemy.Image }
+            };
             for (var i = 1; i < 4; i++)
                 EnemyRotations.Add((Direction)i, EnemyRotations[(Direction)(i - 1)].RotateImage());
+            
+            activeForm = form;
+
             Random random = new Random();
-            Position = new Vector(random.Next(-100, form.ClientSize.Width), -10);
+            Position = new Vector(random.Next(-150, activeForm.ClientSize.Width), -50);
             randDistance = random.Next(LightEnemySize, 200);
         }
 
@@ -67,7 +70,7 @@ namespace UlearnGame.Models
 
                     Position.X -= Speed;
                 }
-                if (playerPosition.Y > Position.Y && Position.Y < (Form.ActiveForm.ClientSize.Height / 2 - randDistance))
+                if (playerPosition.Y > Position.Y && Position.Y < (activeForm.ClientSize.Height / 2 - randDistance))
                 {
                     Enemy.Image = EnemyRotations[Direction.Down];
                     Position.Y += Speed;
