@@ -19,14 +19,13 @@ namespace UlearnGame.Models
 
         private int MissleSpeed = 5;
 
-        public Vector Position;
+        private Vector position;
 
-        public Direction CurrentDirection { get; set; }
         public bool IsRight { get; set; }
         public bool IsLeft { get; set; }
         public bool IsUp { get; set; }
         public bool IsDown { get; set; }
-        public PictureBox PlayerImage { get; set; } = new PictureBox();
+        public PictureBox PlayerImage { get; set; }
 
         private readonly Timer shootTimer;
         private bool canShoot = false;
@@ -44,8 +43,14 @@ namespace UlearnGame.Models
         {
             WindowHeight = height;
             WindowWidth = width;
-            PlayerImage.Size = new Size(ShipSize, ShipSize);
-            PlayerImage.Image = new Bitmap(image, ShipSize, ShipSize);
+            position = new Vector(width / 2, height / 2);
+
+            PlayerImage = new PictureBox
+            {
+                Size = new Size(ShipSize, ShipSize),
+                Image = new Bitmap(image, ShipSize, ShipSize)
+            };
+
             PlayerRotations[Direction.Down] = PlayerImage.Image;
 
             for (var i = 1; i < 4; i++)
@@ -68,31 +73,33 @@ namespace UlearnGame.Models
             shootTimer.Start();
         }
 
+        public Vector GetPosition() => position;
+
         public void MakeMove()
         {
-            if (IsUp && Position.Y > 0)
+            if (IsUp && position.Y > 0)
             {
-                CurrentDirection = Direction.Top;
+                position.Direction = Direction.Top;
                 PlayerImage.Image = PlayerRotations[Direction.Top];
-                Position.Y -= Speed;
+                position.Y -= Speed;
             }
-            if (IsDown && Position.Y + PlayerImage.Height < WindowHeight)
+            if (IsDown && position.Y + PlayerImage.Height < WindowHeight)
             {
                 //  CurrentDirection = Direction.Down;
                 //  PlayerImage.Image = PlayerRotations[Direction.Down];
-                Position.Y += Speed;
+                position.Y += Speed;
             }
-            if (IsRight && Position.X + PlayerImage.Width < WindowWidth)
+            if (IsRight && position.X + PlayerImage.Width < WindowWidth)
             {
                 //  CurrentDirection = Direction.Right;
                 //   PlayerImage.Image = PlayerRotations[Direction.Right];
-                Position.X += Speed;
+                position.X += Speed;
             }
-            if (IsLeft && Position.X > 0)
+            if (IsLeft && position.X > 0)
             {
                 //   CurrentDirection = Direction.Left;
                 //   PlayerImage.Image = PlayerRotations[Direction.Left];
-                Position.X -= Speed;
+                position.X -= Speed;
             }
         }
 
@@ -103,10 +110,10 @@ namespace UlearnGame.Models
                 var missle = MisslePool.FirstOrDefault(missle => missle.Direction == Direction.None);
                 if (missle != null)
                 {
-                    missle.Direction = CurrentDirection;
+                    missle.Direction = position.Direction;
                     missle.Damage = Damage;
                     missle.MissleSpeed = MissleSpeed;
-                    missle.SetPosition(Position.X, Position.Y);
+                    missle.SetPosition(position.X, position.Y);
                     missle.StartMissle();
                     canShoot = false;
                     shootTimer.Start();
@@ -118,12 +125,15 @@ namespace UlearnGame.Models
         {
             foreach (var i in missle)
             {
-                if (i.GetPosition().Distance(Position) < ShipSize)
+                if (i is EnemyMissle)
                 {
-                    i.StopMissle();
-                    Health -= i.Damage;
-                    return true;
+                    if (i.GetPosition().Distance(position) < ShipSize)
+                    {
+                        i.StopMissle();
+                        Health -= i.Damage;
+                        return true;
 
+                    }
                 }
             }
             return false;

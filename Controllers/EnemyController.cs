@@ -36,7 +36,7 @@ namespace UlearnGame.Controllers
                         Enemies[i].MoveFromPoint(Enemies[j].GetPosition());
                     }
                 }
-                Enemies[i].MoveToPoint(mainPlayer.Position);
+                Enemies[i].MoveToPoint(mainPlayer.GetPosition());
             }
         }
 

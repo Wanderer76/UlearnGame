@@ -14,7 +14,6 @@ namespace UlearnGame.Models
         private const int LightEnemySize = 50;
         public int Speed { get; set; } = 1;
         public int Damage { get; set; } = 15;
-        public Direction Direction { get; set; }
 
         public readonly int MissleSpeed = 2;
         public readonly List<IMissle> Missles;
@@ -95,20 +94,23 @@ namespace UlearnGame.Models
 
                 if (playerPosition.X > Position.X)
                 {
-
+                    Position.Direction = Direction.Right;
                     Position.X += Speed;
                 }
                 if (playerPosition.X < Position.X)
                 {
+                    Position.Direction = Direction.Left;
                     Position.X -= Speed;
                 }
                 if (playerPosition.Y > Position.Y && Position.Y < (activeForm.ClientSize.Height / 2 - randDistance))
                 {
+                    Position.Direction = Direction.Down;
                     Enemy.Image = EnemyRotations[Direction.Down];
                     Position.Y += Speed;
                 }
                 if (playerPosition.Y < Position.Y)
                 {
+                    Position.Direction = Direction.Top;
                     Position.Y -= Speed;
                 }
             }
@@ -122,18 +124,22 @@ namespace UlearnGame.Models
         {
             if (position.X > Position.X)
             {
+                Position.Direction = Direction.Left;
                 Position.X -= Speed;
             }
             if (position.X < Position.X)
             {
+                Position.Direction = Direction.Right;
                 Position.X += Speed;
             }
             if (position.Y > Position.Y)
             {
+                Position.Direction = Direction.Top;
                 Position.Y -= Speed;
             }
             if (position.Y < Position.Y)
             {
+                Position.Direction = Direction.Down;
                 Position.Y += Speed;
             }
         }
@@ -142,12 +148,14 @@ namespace UlearnGame.Models
         {
             foreach (var i in missle)
             {
-                if (i.GetPosition().Distance(Position) < LightEnemySize)
+                if (i is PlayerMissle)
                 {
-                    i.StopMissle();
-                    health -= i.Damage;
-                    return true;
-
+                    if (i.GetPosition().Distance(Position) < LightEnemySize)
+                    {
+                        i.StopMissle();
+                        health -= i.Damage;
+                        return true;
+                    }
                 }
             }
             return false;
@@ -156,7 +164,11 @@ namespace UlearnGame.Models
         public PictureBox GetSource() => Enemy;
 
         public int GetHealth() => health;
-        public List<IMissle> GetMissles() => Missles;
+        public IEnumerable<IMissle> GetMissles()
+        {
+            foreach (var missle in Missles)
+                yield return missle;
+        }
 
         public void DamageToHealth(int damage)
         {

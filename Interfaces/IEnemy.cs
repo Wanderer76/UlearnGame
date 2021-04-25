@@ -18,7 +18,7 @@ namespace UlearnGame.Interfaces
         public void DamageToHealth(int damage);
         public Image GetImage();
         public PictureBox GetSource();
-        public List<IMissle> GetMissles();
+        public IEnumerable<IMissle> GetMissles();
         public bool DeadInConflict(IEnumerable<IMissle> missle);
         public int GetHealth();
     }
