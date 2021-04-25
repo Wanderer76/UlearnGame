@@ -18,7 +18,7 @@ namespace UlearnGame.Controllers
             activeForm = form;
             for (var i = 0; i < count; i++)
             {
-                Enemies.Add(new LightEnemy(activeForm));
+                Enemies.Add(new LightEnemy(activeForm, 3));
             }
         }
 
@@ -32,7 +32,9 @@ namespace UlearnGame.Controllers
                         continue;
 
                     if (Enemies[i].GetPosition().Distance(Enemies[j].GetPosition()) < 100)
+                    {
                         Enemies[i].MoveFromPoint(Enemies[j].GetPosition());
+                    }
                 }
                 Enemies[i].MoveToPoint(mainPlayer.Position);
             }
@@ -57,9 +59,10 @@ namespace UlearnGame.Controllers
             if (deadCount > 0)
             {
                 for (var i = 0; i < deadCount; i++)
-                    Enemies.Add(new LightEnemy(activeForm));
+                    Enemies.Add(new LightEnemy(activeForm, 3));
             }
         }
+
 
     }
 }

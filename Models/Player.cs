@@ -34,10 +34,11 @@ namespace UlearnGame.Models
         private int WindowHeight { get; }
         private int WindowWidth { get; }
 
-        public readonly List<PlayerMissle> MisslePool = new List<PlayerMissle>(5);
+        public readonly List<IMissle> MisslePool = new List<IMissle>(5);
 
         private readonly Dictionary<Direction, Image> PlayerRotations = new Dictionary<Direction, Image>();
 
+        private readonly Image missleSource = Properties.Resources.spaceMissiles_013;
 
         public Player(Image image, int height, int width)
         {
@@ -52,7 +53,7 @@ namespace UlearnGame.Models
 
 
             for (var i = 0; i < MisslePool.Capacity; i++)
-                MisslePool.Add(new PlayerMissle(Direction.None, MissleSpeed, -2000, -2000));
+                MisslePool.Add(new PlayerMissle(missleSource, Direction.None, MissleSpeed, -2000, -2000));
 
             shootTimer = new Timer
             {
@@ -63,7 +64,7 @@ namespace UlearnGame.Models
             {
                 canShoot = true;
                 shootTimer.Stop();
-            }; 
+            };
             shootTimer.Start();
         }
 
@@ -77,24 +78,24 @@ namespace UlearnGame.Models
             }
             if (IsDown && Position.Y + PlayerImage.Height < WindowHeight)
             {
-              //  CurrentDirection = Direction.Down;
-              //  PlayerImage.Image = PlayerRotations[Direction.Down];
+                //  CurrentDirection = Direction.Down;
+                //  PlayerImage.Image = PlayerRotations[Direction.Down];
                 Position.Y += Speed;
             }
             if (IsRight && Position.X + PlayerImage.Width < WindowWidth)
             {
-              //  CurrentDirection = Direction.Right;
-             //   PlayerImage.Image = PlayerRotations[Direction.Right];
+                //  CurrentDirection = Direction.Right;
+                //   PlayerImage.Image = PlayerRotations[Direction.Right];
                 Position.X += Speed;
             }
             if (IsLeft && Position.X > 0)
             {
-             //   CurrentDirection = Direction.Left;
-             //   PlayerImage.Image = PlayerRotations[Direction.Left];
+                //   CurrentDirection = Direction.Left;
+                //   PlayerImage.Image = PlayerRotations[Direction.Left];
                 Position.X -= Speed;
             }
         }
-     
+
         public void Shoot(Graphics graphics)
         {
             if (canShoot == true)
@@ -105,12 +106,27 @@ namespace UlearnGame.Models
                     missle.Direction = CurrentDirection;
                     missle.Damage = Damage;
                     missle.MissleSpeed = MissleSpeed;
-                    missle.SetCoordinates(Position.X, Position.Y);
+                    missle.SetPosition(Position.X, Position.Y);
                     missle.StartMissle();
                     canShoot = false;
                     shootTimer.Start();
                 }
             }
+        }
+
+        public bool DeadInConflict(IEnumerable<IMissle> missle)
+        {
+            foreach (var i in missle)
+            {
+                if (i.GetPosition().Distance(Position) < ShipSize)
+                {
+                    i.StopMissle();
+                    Health -= i.Damage;
+                    return true;
+
+                }
+            }
+            return false;
         }
     }
 }

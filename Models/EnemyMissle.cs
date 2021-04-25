@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
 using UlearnGame.Interfaces;
 using UlearnGame.Utilities;
 
 namespace UlearnGame.Models
 {
-    public class PlayerMissle : IMissle
+    class EnemyMissle : IMissle
     {
         private const int Width = 20;
         private const int Height = 25;
@@ -25,12 +26,12 @@ namespace UlearnGame.Models
         private readonly Dictionary<Direction, Image> images = new Dictionary<Direction, Image>()
         {
             {Direction.Top,new Bitmap(Properties.Resources.spaceMissiles_013,Width,Height)},
-            {Direction.Down,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate180FlipNone)},
+            {Direction.Down,RotateImage(new Bitmap(Properties.Resources.spaceMissiles_013,Width,Height),RotateFlipType.Rotate180FlipNone)},
             {Direction.Left,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate270FlipNone)},
             {Direction.Right,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate90FlipNone)},
         };
 
-        public PlayerMissle(Image image, Direction direction, int missleSpeed, int x, int y)
+        public EnemyMissle(Image image, Direction direction, int missleSpeed, int x, int y)
         {
             Direction = direction;
             MissleSpeed = missleSpeed;
@@ -45,16 +46,16 @@ namespace UlearnGame.Models
                 Width = Width,
                 Height = Height
             };
-            MissleImage.Image = images[Direction.Top];
+            MissleImage.Image = images[Direction.Down];
 
             movingTimer.Interval = MissleSpeed;
 
             movingTimer.Tick += new EventHandler((sender, args) =>
             {
-                Position.Y -= MissleSpeed;
-                Direction = Direction.Top;
+                Position.Y += MissleSpeed;
+                Direction = Direction.Down;
 
-                if (Position.Y < 0)
+                if (Position.Y > Form.ActiveForm.ClientSize.Height)
                 {
                     StopMissle();
                 }

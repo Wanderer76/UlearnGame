@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using UlearnGame.Models;
@@ -17,9 +18,8 @@ namespace UlearnGame.Interfaces
         public void DamageToHealth(int damage);
         public Image GetImage();
         public PictureBox GetSource();
-        public bool DeadInConflict(IEnumerable<PlayerMissle> missle);
+        public List<IMissle> GetMissles();
+        public bool DeadInConflict(IEnumerable<IMissle> missle);
         public int GetHealth();
-
-
     }
 }

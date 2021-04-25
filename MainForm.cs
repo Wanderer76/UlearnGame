@@ -45,7 +45,7 @@ namespace UlearnGame
                 //    if (enemies[i].DeadInConflict(mainPlayer.MisslePool))
                 //        enemies.RemoveAt(i);
                 //}
-                
+
                 Invalidate();
             };
             updateTimer.Start();
@@ -75,8 +75,8 @@ namespace UlearnGame
                 Position = new Vector(ClientSize.Width / 2, ClientSize.Height / 2)
             };
 
-            enemies = new EnemyController(EnemyCount,this);
-            
+            enemies = new EnemyController(EnemyCount, this);
+
 
 
             KeyDown += new KeyEventHandler(OnKeyDown);
@@ -88,8 +88,17 @@ namespace UlearnGame
                     args.Graphics.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
 
                 foreach (var missle in mainPlayer.MisslePool)
+                {
                     if (missle.Direction != Direction.None)
-                        args.Graphics.DrawImage(missle.MissleImage.Image, missle.Position.ToPoint());
+                        args.Graphics.DrawImage(missle.MissleImage.Image, missle.GetPosition().ToPoint());
+                }
+
+                foreach (var enemy in enemies.Enemies)
+                {
+                    foreach (var missle in enemy.GetMissles())
+                        if (missle.Direction != Direction.None)
+                            args.Graphics.DrawImage(missle.MissleImage.Image, missle.GetPosition().ToPoint());
+                }
             };
         }
 
