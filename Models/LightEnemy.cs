@@ -12,11 +12,11 @@ namespace UlearnGame.Models
     class LightEnemy : IEnemy
     {
         private const int LightEnemySize = 50;
-        public int Speed { get; set; } = 2;
+        public int Speed { get; set; } = 1;
         public int Damage { get; set; } = 15;
         public Direction Direction { get; set; }
 
-        public readonly int MissleSpeed = 3;
+        public readonly int MissleSpeed = 2;
         public readonly List<IMissle> Missles;
 
         private Vector Position;
@@ -48,7 +48,7 @@ namespace UlearnGame.Models
 
             Missles = new List<IMissle>(missleCount);
             for (var i = 0; i < Missles.Capacity; i++)
-                Missles.Add(new EnemyMissle(Properties.Resources.spaceMissiles_015, Direction.None, MissleSpeed, -2000, -2000));
+                Missles.Add(new EnemyMissle(Properties.Resources.spaceMissiles_015, Direction.None, MissleSpeed, activeForm.ClientSize.Height, -2000, -2000));
 
             Random random = new Random();
             Position = new Vector(random.Next(-150, activeForm.ClientSize.Width), -50);
@@ -71,7 +71,7 @@ namespace UlearnGame.Models
         {
             if (canShoot == true)
             {
-                    Debug.WriteLine($"Count - {Missles.Count}");
+                Debug.WriteLine($"Count - {Missles.Count}");
                 var missle = Missles.FirstOrDefault(missle => missle.Direction == Direction.None);
                 if (missle != null)
                 {
@@ -112,9 +112,6 @@ namespace UlearnGame.Models
                     Position.Y -= Speed;
                 }
             }
-            else
-                Shoot();
-           
         }
 
         public Vector GetPosition() => Position;
@@ -139,7 +136,6 @@ namespace UlearnGame.Models
             {
                 Position.Y += Speed;
             }
-            Shoot();
         }
 
         public bool DeadInConflict(IEnumerable<IMissle> missle)

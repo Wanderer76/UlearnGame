@@ -22,20 +22,20 @@ namespace UlearnGame.Models
 
         private readonly Timer movingTimer = new Timer();
 
+        private int maxHeight;
 
         private readonly Dictionary<Direction, Image> images = new Dictionary<Direction, Image>()
         {
-            {Direction.Top,new Bitmap(Properties.Resources.spaceMissiles_013,Width,Height)},
-            {Direction.Down,RotateImage(new Bitmap(Properties.Resources.spaceMissiles_013,Width,Height),RotateFlipType.Rotate180FlipNone)},
-            {Direction.Left,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate270FlipNone)},
-            {Direction.Right,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate90FlipNone)},
-        };
+           };
 
-        public EnemyMissle(Image image, Direction direction, int missleSpeed, int x, int y)
+        public EnemyMissle(Image image, Direction direction, int missleSpeed, int maxHeight ,int x, int y)
         {
             Direction = direction;
             MissleSpeed = missleSpeed;
 
+            images.Add(Direction.Top, new Bitmap(Properties.Resources.spaceMissiles_015, Width, Height));
+            images.Add(Direction.Down, RotateImage(images[Direction.Top], RotateFlipType.Rotate180FlipNone));
+           
             Position.X = x;
             Position.Y = y;
 
@@ -46,7 +46,11 @@ namespace UlearnGame.Models
                 Width = Width,
                 Height = Height
             };
+           
+            
             MissleImage.Image = images[Direction.Down];
+
+
 
             movingTimer.Interval = MissleSpeed;
 
@@ -55,7 +59,7 @@ namespace UlearnGame.Models
                 Position.Y += MissleSpeed;
                 Direction = Direction.Down;
 
-                if (Position.Y > Form.ActiveForm.ClientSize.Height)
+                if (Position.Y > maxHeight)
                 {
                     StopMissle();
                 }

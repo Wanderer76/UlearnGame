@@ -19,6 +19,8 @@ namespace UlearnGame
         private EnemyController enemies;
         public Graphics graphics;
 
+        private bool IsDead = false;
+
         private const int EnemyCount = 5;
 
         public MainForm()
@@ -39,14 +41,25 @@ namespace UlearnGame
                 enemies.MoveEnemies(mainPlayer);
                 enemies.CheckForHit(mainPlayer);
 
-                //for (int i = 0; i < enemies.Count; i++)
-                //{
+                for (int i = 0; i < enemies.Enemies.Count; i++)
+                {
 
-                //    if (enemies[i].DeadInConflict(mainPlayer.MisslePool))
-                //        enemies.RemoveAt(i);
-                //}
+                    enemies.Enemies[i].Shoot();
 
-                Invalidate();
+                }
+
+                foreach (var enemy in enemies.Enemies)
+                {
+                    var enemyMissles = enemy.GetMissles();
+                    if (mainPlayer.DeadInConflict(enemyMissles) && mainPlayer.Health < 0)
+                    {
+                        IsDead = true;
+                        MessageBox.Show("Потрачено");
+                    }
+                }
+
+                if (!IsDead)
+                    Invalidate();
             };
             updateTimer.Start();
 
@@ -84,6 +97,7 @@ namespace UlearnGame
             Paint += (sender, args) =>
             {
                 args.Graphics.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.Position.ToPoint());
+
                 foreach (var enemy in enemies.Enemies)
                     args.Graphics.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
 

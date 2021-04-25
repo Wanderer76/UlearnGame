@@ -18,7 +18,7 @@ namespace UlearnGame.Controllers
             activeForm = form;
             for (var i = 0; i < count; i++)
             {
-                Enemies.Add(new LightEnemy(activeForm, 3));
+                Enemies.Add(new LightEnemy(activeForm, 1));
             }
         }
 
