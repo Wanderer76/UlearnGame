@@ -32,6 +32,7 @@ namespace UlearnGame.Models
 
         private int WindowHeight { get; }
         private int WindowWidth { get; }
+        private Form activeForm;
 
         public readonly List<IMissle> MisslePool = new List<IMissle>(5);
 
@@ -39,11 +40,10 @@ namespace UlearnGame.Models
 
         private readonly Image missleSource = Properties.Resources.spaceMissiles_013;
 
-        public Player(Image image, int height, int width)
+        public Player(Image image, Form form)
         {
-            WindowHeight = height;
-            WindowWidth = width;
-            position = new Vector(width / 2, height / 2);
+            activeForm = form;
+            position = new Vector(activeForm.ClientSize.Width / 2, activeForm.ClientSize.Height/ 2);
 
             PlayerImage = new PictureBox
             {
@@ -83,13 +83,13 @@ namespace UlearnGame.Models
                 PlayerImage.Image = PlayerRotations[Direction.Top];
                 position.Y -= Speed;
             }
-            if (IsDown && position.Y + PlayerImage.Height < WindowHeight)
+            if (IsDown && position.Y + PlayerImage.Height < activeForm.ClientSize.Height)
             {
                 //  CurrentDirection = Direction.Down;
                 //  PlayerImage.Image = PlayerRotations[Direction.Down];
                 position.Y += Speed;
             }
-            if (IsRight && position.X + PlayerImage.Width < WindowWidth)
+            if (IsRight && position.X + PlayerImage.Width < activeForm.ClientSize.Width)
             {
                 //  CurrentDirection = Direction.Right;
                 //   PlayerImage.Image = PlayerRotations[Direction.Right];

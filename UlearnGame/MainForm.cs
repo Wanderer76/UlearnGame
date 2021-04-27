@@ -12,11 +12,12 @@ namespace UlearnGame
         private Player mainPlayer;
         private readonly Timer updateTimer;
         private EnemyController enemies;
+
         private readonly Graphics graphics;
 
         private bool IsDead = false;
 
-        private const int EnemyCount = 5;
+        private const int EnemyCount = 7;
 
         public MainForm()
         {
@@ -63,29 +64,31 @@ namespace UlearnGame
 
         private void Init()
         {
-            mainPlayer = new Player(Properties.Resources.spaceShips_001, ClientSize.Height, ClientSize.Width);
+            mainPlayer = new Player(Properties.Resources.spaceShips_001, this);
             enemies = new EnemyController(EnemyCount, this);
 
             KeyDown += new KeyEventHandler(OnKeyDown);
             KeyUp += new KeyEventHandler(OnKeyUp);
+
             Paint += (sender, args) =>
             {
-                args.Graphics.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.GetPosition().ToPoint());
+                var graph = args.Graphics;
+                graph.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.GetPosition().ToPoint());
 
                 foreach (var enemy in enemies.Enemies)
-                    args.Graphics.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
+                    graph.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
 
                 foreach (var missle in mainPlayer.MisslePool)
                 {
                     if (missle.Direction != Direction.None)
-                        args.Graphics.DrawImage(missle.MissleImage.Image, missle.GetPosition().ToPoint());
+                        graph.DrawImage(missle.MissleImage.Image, missle.GetPosition().ToPoint());
                 }
 
                 foreach (var enemy in enemies.Enemies)
                 {
                     foreach (var missle in enemy.GetMissles())
                         if (missle.Direction != Direction.None)
-                            args.Graphics.DrawImage(missle.MissleImage.Image, missle.GetPosition().ToPoint());
+                            graph.DrawImage(missle.MissleImage.Image, missle.GetPosition().ToPoint());
                 }
             };
         }

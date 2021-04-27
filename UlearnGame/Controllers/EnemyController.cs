@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using UlearnGame.Interfaces;
 using UlearnGame.Models;
@@ -9,17 +7,33 @@ namespace UlearnGame.Controllers
 {
     class EnemyController
     {
+        public const int MissleCount = 1;
+        public readonly int spawnDelay = 800;
+
         public List<IEnemy> Enemies { get; private set; }
         private readonly Form activeForm;
-
+        private readonly Timer spawnTimer;
+        
         public EnemyController(int count, Form form)
         {
             Enemies = new List<IEnemy>(count);
             activeForm = form;
+            spawnTimer = new Timer
+            {
+                Interval = spawnDelay
+            };
+
+            spawnTimer.Tick += (sender, args) => 
+            {
+                if (Enemies.Count < Enemies.Capacity)
+                    Enemies.Add(new LightEnemy(form, MissleCount));
+            };
             for (var i = 0; i < count; i++)
             {
-                Enemies.Add(new LightEnemy(activeForm, 1));
+                Enemies.Add(new LightEnemy(activeForm, MissleCount));
             }
+
+            spawnTimer.Start();
         }
 
         public void MoveEnemies(Player mainPlayer)
@@ -42,27 +56,17 @@ namespace UlearnGame.Controllers
 
         public void CheckForHit(Player mainPlayer)
         {
-            int deadCount = 0;
-
             for (int i = 0; i < Enemies.Count; i++)
             {
-
                 if (Enemies[i].DeadInConflict(mainPlayer.MisslePool))
                 {
                     if (Enemies[i].GetHealth() <= 0)
                     {
                         Enemies.RemoveAt(i);
-                        deadCount++;
                     }
                 }
             }
-            if (deadCount > 0)
-            {
-                for (var i = 0; i < deadCount; i++)
-                    Enemies.Add(new LightEnemy(activeForm, 3));
-            }
         }
-
 
     }
 }

@@ -27,8 +27,6 @@ namespace UlearnGame.Utilities
             Y = point.Y;
         }
 
-        public static Vector operator +(Vector vec1, Vector vec2) => new Vector(vec1.X + vec2.X, vec1.Y + vec2.Y);
-        public static Vector operator -(Vector vec1, Vector vec2) => new Vector(vec1.X - vec2.X, vec1.Y - vec2.Y);
         public static bool operator ==(Vector vec1, Vector vec2)
         {
             return vec1.X == vec2.X && vec1.Y == vec2.Y;
