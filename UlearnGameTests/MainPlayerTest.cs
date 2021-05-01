@@ -1,0 +1,167 @@
+﻿using System.Diagnostics;
+using System.Drawing;
+using System.Windows.Forms;
+using NUnit.Framework;
+using UlearnGame.Models;
+using UlearnGame.Utilities;
+
+namespace UlearnGameTests
+{
+    [TestFixture]
+    class MainPlayerTest
+    {
+        [TestCase(100, 100)]
+        [TestCase(640, 480)]
+        [TestCase(1280, 720)]
+        [TestCase(10, 10)]
+        public void TestMainPlayerStartPosition(int width, int height)
+        {
+            var form = new Form
+            {
+                Size = new Size(width, height)
+            };
+            var player = new Player(form);
+            Assert.AreEqual(form.ClientSize.Width / 2, player.GetPosition().X);
+            Assert.AreEqual(form.ClientSize.Height / 2, player.GetPosition().Y);
+        }
+
+        [TestCase(1)]
+        [TestCase(5)]
+        [TestCase(6)]
+        [TestCase(10)]
+        public void CanMoveToRight(int count)
+        {
+            var form = new Form
+            {
+                Size = new Size(1280, 720)
+            };
+            var player = new Player(form);
+            var startPosition = player.GetPosition();
+            for (var i = 0; i < count; i++)
+                player.MoveToRight();
+
+            Assert.AreEqual(startPosition.X + player.Speed * count, player.GetPosition().X);
+
+        }
+
+        [TestCase(1)]
+        [TestCase(5)]
+        [TestCase(6)]
+        [TestCase(10)]
+        public void CanMoveToLeft(int count)
+        {
+            var form = new Form
+            {
+                Size = new Size(1280, 720)
+            };
+            var player = new Player(form);
+            var startPosition = player.GetPosition();
+            for (var i = 0; i < count; i++)
+                player.MoveToLeft();
+
+            Assert.AreEqual(startPosition.X - player.Speed * count, player.GetPosition().X);
+        }
+
+        [TestCase(1)]
+        [TestCase(5)]
+        [TestCase(6)]
+        [TestCase(10)]
+        public void CanMoveToTop(int count)
+        {
+            var form = new Form
+            {
+                Size = new Size(1280, 720)
+            };
+            var player = new Player(form);
+            var startPosition = player.GetPosition();
+            for (var i = 0; i < count; i++)
+                player.MoveToTop();
+
+            Assert.AreEqual(startPosition.Y - player.Speed * count, player.GetPosition().Y);
+
+        }
+        [TestCase(1)]
+        [TestCase(5)]
+        [TestCase(6)]
+        [TestCase(10)]
+        public void CanMoveToBottom(int count)
+        {
+            var form = new Form
+            {
+                Size = new Size(1280, 720)
+            };
+            var player = new Player(form);
+            var startPosition = player.GetPosition();
+            for (var i = 0; i < count; i++)
+                player.MoveToDown();
+
+            Assert.AreEqual(startPosition.Y + player.Speed * count, player.GetPosition().Y);
+
+        }
+        // ----------------------------------------------------
+        [TestCase(6)]
+        [TestCase(10)]
+        public void CanNotMoveToRight(int count)
+        {
+            var form = new Form
+            {
+                ClientSize = new Size(150, 150)
+            };
+            var player = new Player(form);
+            for (var i = 0; i < count; i++)
+                player.MoveToRight();
+
+            Assert.LessOrEqual(form.ClientSize.Width - player.GetPosition().X, Player.ShipSize);
+
+        }
+
+        [TestCase(6)]
+        [TestCase(10)]
+        public void CanNotMoveToLeft(int count)
+        {
+            var form = new Form
+            {
+                ClientSize = new Size(150, 150)
+            };
+            var player = new Player(form);
+            for (var i = 0; i < count; i++)
+                player.MoveToLeft();
+
+            Assert.LessOrEqual(0 + player.GetPosition().X, Player.ShipSize);
+        }
+
+        [TestCase(6)]
+        [TestCase(10)]
+        public void CanNotMoveToTop(int count)
+        {
+            var form = new Form
+            {
+                ClientSize = new Size(150, 150)
+            };
+            var player = new Player(form);
+            for (var i = 0; i < count; i++)
+                player.MoveToTop();
+
+            Assert.LessOrEqual(player.GetPosition().Y, Player.ShipSize);
+
+        }
+        [TestCase(6)]
+        [TestCase(10)]
+        public void CanNotMoveToBottom(int count)
+        {
+            var form = new Form
+            {
+                ClientSize = new Size(150, 150)
+            };
+            var player = new Player(form);
+            for (var i = 0; i < count; i++)
+                player.MoveToDown();
+
+            Assert.LessOrEqual(form.ClientSize.Width - player.GetPosition().Y, Player.ShipSize);
+        }
+        // ----------------------
+
+
+
+    }
+}

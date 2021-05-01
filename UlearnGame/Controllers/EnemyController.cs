@@ -8,7 +8,7 @@ namespace UlearnGame.Controllers
     class EnemyController
     {
         public const int MissleCount = 1;
-        public readonly int spawnDelay = 800;
+        public readonly int spawnDelay = 900;
 
         public List<IEnemy> Enemies { get; private set; }
         private readonly Form activeForm;

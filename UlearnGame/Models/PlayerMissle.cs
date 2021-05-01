@@ -22,13 +22,7 @@ namespace UlearnGame.Models
         private readonly Timer movingTimer = new Timer();
 
 
-        private readonly Dictionary<Direction, Image> images = new Dictionary<Direction, Image>()
-        {
-            {Direction.Top,new Bitmap(Properties.Resources.spaceMissiles_013,Width,Height)},
-            {Direction.Down,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate180FlipNone)},
-            {Direction.Left,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate270FlipNone)},
-            {Direction.Right,RotateImage(Properties.Resources.spaceMissiles_013,RotateFlipType.Rotate90FlipNone)},
-        };
+        private readonly Dictionary<Direction, Image> images = new Dictionary<Direction, Image>();
 
         public PlayerMissle(Image image, Direction direction, int missleSpeed, int x, int y)
         {
@@ -45,14 +39,29 @@ namespace UlearnGame.Models
                 Width = Width,
                 Height = Height
             };
-            MissleImage.Image = images[Direction.Top];
+
+            images.Add(Direction.Top, MissleImage.Image);
+            images.Add(Direction.Right, RotateImage(images[Direction.Top], RotateFlipType.Rotate90FlipNone));
+            images.Add(Direction.Down,RotateImage(images[Direction.Right], RotateFlipType.Rotate90FlipNone));
+            images.Add(Direction.Left, RotateImage(images[Direction.Down], RotateFlipType.Rotate90FlipNone));
+
 
             movingTimer.Interval = MissleSpeed;
 
             movingTimer.Tick += new EventHandler((sender, args) =>
             {
-                Position.Y -= MissleSpeed;
-                Direction = Direction.Top;
+                if (Direction == Direction.Top)
+                    Position.Y -= MissleSpeed;
+                
+                if (Direction == Direction.Left)
+                    Position.X -= MissleSpeed;
+                
+                if (Direction == Direction.Right)
+                    Position.X += MissleSpeed;
+                
+                if (Direction == Direction.Down)
+                    Position.Y += MissleSpeed;
+
 
                 if (Position.Y < 0)
                 {
@@ -64,6 +73,7 @@ namespace UlearnGame.Models
 
         public void StartMissle()
         {
+            MissleImage.Image = images[Direction];
             movingTimer.Start();
         }
 

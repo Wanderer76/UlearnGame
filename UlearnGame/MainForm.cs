@@ -37,6 +37,7 @@ namespace UlearnGame
                 enemies.MoveEnemies(mainPlayer);
                 enemies.CheckForHit(mainPlayer);
 
+
                 for (int i = 0; i < enemies.Enemies.Count; i++)
                 {
                     enemies.Enemies[i].Shoot();
@@ -61,10 +62,9 @@ namespace UlearnGame
             updateTimer.Start();
 
         }
-
         private void Init()
         {
-            mainPlayer = new Player(Properties.Resources.spaceShips_001, this);
+            mainPlayer = new Player(this);
             enemies = new EnemyController(EnemyCount, this);
 
             KeyDown += new KeyEventHandler(OnKeyDown);
@@ -92,7 +92,17 @@ namespace UlearnGame
                 }
             };
         }
+        //TODO Новый способ
+        private void Movement(Player player)
+        {
+           /* if(Keyboard.IsKeyDown(KeyDown.W))
+            {
+                mainPlayer.MoveToTop();
+            }*/
+        }
 
+
+        //Старый
         private void OnKeyDown(object sender, KeyEventArgs args)
         {
             Keys keyCode = args.KeyCode;
@@ -115,7 +125,7 @@ namespace UlearnGame
             }
             if (keyCode == Keys.Space)
             {
-                mainPlayer.Shoot(graphics);
+                mainPlayer.Shoot();
 
             }
         }
@@ -146,6 +156,4 @@ namespace UlearnGame
             base.OnSizeChanged(e);
         }
     }
-
-
 }
