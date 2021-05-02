@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using UlearnGame.Interfaces;
 using UlearnGame.Models;
@@ -8,53 +10,45 @@ namespace UlearnGame.Controllers
 {
     class EnemyController
     {
-        public int Wave = 1;
+        public bool IsEnd { get; private set; } = false;
 
+        private int currentWave = 1;
         private int countOfEnemies = 5;
+        private int MissleCount = 1;
+        public int spawnDelay = 1200;
 
-        private  int MissleCount = 1;
-        public readonly int spawnDelay = 1200;
-        public int WaveTime { get; private set; } = 10000;
-
+        private int deadCount = 0;
 
         public List<IEnemy> Enemies { get; private set; }
-        private readonly Form activeForm;
         private readonly Timer spawnTimer;
 
-        private readonly Timer waveTimer;
 
         public EnemyController(int count, Form form)
         {
             countOfEnemies = count;
             Enemies = new List<IEnemy>(countOfEnemies);
-            activeForm = form;
             spawnTimer = new Timer
             {
                 Interval = spawnDelay
             };
 
-            waveTimer = new Timer
-            {
-                Interval = WaveTime
-            };
-
-            waveTimer.Tick += (sender, args) =>
-            {
-                Wave++;
-                WaveTime *= Wave;
-                MissleCount = MissleCount == 5 ? 5 : MissleCount++;
-                countOfEnemies++;
-                Enemies.Capacity = countOfEnemies;
-                spawnTimer.Interval = (int)(spawnDelay * (1f / Wave));
-            };
-
             spawnTimer.Tick += (sender, args) =>
             {
-                if (Enemies.Count < Enemies.Capacity)
+                if (deadCount != countOfEnemies)
                     Enemies.Add(new LightEnemy(form, MissleCount));
+                else
+                    IsEnd = true;
             };
+        }
+        public void StartSpawn()
+        {
+            IsEnd = false;
             spawnTimer.Start();
-            waveTimer.Start();
+        }
+        public void StopSpawn()
+        {
+            IsEnd = true;
+            spawnTimer.Stop();
         }
 
         public void MoveEnemies(Player mainPlayer)
@@ -86,10 +80,21 @@ namespace UlearnGame.Controllers
                     Enemies[i].SetSource(img);
                     if (Enemies[i].GetHealth() <= 0)
                     {
+                        deadCount++;
                         Enemies.RemoveAt(i);
                     }
                 }
             }
+        }
+
+        public void IncreaseWave()
+        {
+            countOfEnemies++;
+            Enemies.Capacity = countOfEnemies;
+            currentWave++;
+            MissleCount = currentWave % 2 == 0 ? MissleCount++ : MissleCount;
+            spawnDelay = spawnDelay < 900 ? 900 : spawnDelay - 50;
+            spawnTimer.Interval = spawnDelay;
         }
 
     }

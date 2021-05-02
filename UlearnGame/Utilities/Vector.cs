@@ -37,10 +37,7 @@ namespace UlearnGame.Utilities
         {
             return !(vec1 == vec2);
         }
-        public static Vector operator -(Vector vec1, Vector vec2)
-        {
-            return new Vector(vec1.X - vec2.X, vec1.Y - vec2.Y);
-        }
+        public static Vector operator -(Vector vec1, Vector vec2) => new Vector(vec1.X - vec2.X, vec1.Y - vec2.Y);
 
         public int Length => (int)Math.Sqrt(X * X + Y * Y);
         public Point ToPoint() => new Point(X, Y);

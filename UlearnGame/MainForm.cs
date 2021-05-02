@@ -12,9 +12,9 @@ namespace UlearnGame
     {
         private Player mainPlayer;
         private readonly Timer updateTimer;
-        private EnemyController enemies;
+        private EnemyController enemyController;
         private UIController uIController;
-
+        private WaveController waveController;
 
         private bool IsDead = false;
 
@@ -34,7 +34,6 @@ namespace UlearnGame
             updateTimer.Tick += (sender, args) =>
             {
                 OnTimerEvent();
-
             };
             updateTimer.Start();
 
@@ -44,16 +43,16 @@ namespace UlearnGame
         {
             mainPlayer.MakeMove();
             //Movement(mainPlayer);
-            enemies.MoveEnemies(mainPlayer);
-            enemies.CheckForHit(mainPlayer);
+            enemyController.MoveEnemies(mainPlayer);
+            enemyController.CheckForHit(mainPlayer);
 
 
-            for (int i = 0; i < enemies.Enemies.Count; i++)
+            for (int i = 0; i < enemyController.Enemies.Count; i++)
             {
-                enemies.Enemies[i].Shoot();
+                enemyController.Enemies[i].Shoot();
             }
 
-            foreach (var enemy in enemies.Enemies)
+            foreach (var enemy in enemyController.Enemies)
             {
                 var enemyMissles = enemy.GetMissles();
                 if (mainPlayer.DeadInConflict(enemyMissles) && mainPlayer.Health < 0)
@@ -72,9 +71,17 @@ namespace UlearnGame
         private void Init()
         {
             mainPlayer = new Player(this);
-            enemies = new EnemyController(EnemyCount, this);
-            uIController = new UIController(this, enemies, mainPlayer);
+            enemyController = new EnemyController(EnemyCount, this);
+            waveController = new WaveController(enemyController);
+            uIController = new UIController(this, waveController, mainPlayer);
 
+            waveController.StartWaves();
+            waveController.OnWaveEnds += () =>
+            {
+                uIController.Wave = waveController.Wave;
+                uIController.WaveTime = waveController.WaveTime;
+                enemyController.IncreaseWave();
+            };
 
             KeyDown += new KeyEventHandler(OnKeyDown);
             KeyUp += new KeyEventHandler(OnKeyUp);
@@ -88,36 +95,39 @@ namespace UlearnGame
         private void OnPaintEvent(PaintEventArgs args)
         {
             var graph = args.Graphics;
-            graph.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.GetPosition().ToPoint());
-            var playerPosition = mainPlayer.GetPosition();
-            //playerPosition.X += Player.ShipSize/2;
-            //playerPosition.Y += Player.ShipSize;
-            //graph.DrawImage(mainPlayer.SpeedEffect.Image, playerPosition.ToPoint());
 
-            foreach (var enemy in enemies.Enemies)
+            graph.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.GetPosition().ToPoint());
+
+            foreach (var enemy in enemyController.Enemies)
                 graph.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
 
-            foreach (var missle in mainPlayer.MisslePool)
+            var playerMissleImage = mainPlayer.MisslePool[0].MissleImage.Image;
+
+            foreach (var point in mainPlayer.MisslePool.Where(missle => missle.Direction != Direction.None).Select(m => m.GetPosition().ToPoint()))
             {
-                if (missle.Direction != Direction.None)
-                    graph.DrawImage(missle.MissleImage.Image, missle.GetPosition().ToPoint());
+                graph.DrawImage(playerMissleImage, point);
             }
 
-            foreach (var enemy in enemies.Enemies)
-            {
-                foreach (var missle in enemy.GetMissles().Where(missle => missle.Direction != Direction.None))
-                {
-                    graph.DrawImage(missle.MissleImage.Image, missle.GetPosition().ToPoint());
-                }
-            }
-
+            DrawEnemyMissles(graph);
             uIController.Update();
+        }
+
+        private void DrawEnemyMissles(Graphics graph)
+        {
+            var missles = enemyController.Enemies
+                .SelectMany(enemy => enemy.GetMissles().Where(missle => missle.Direction != Direction.None))
+                .ToDictionary(tuple => tuple.MissleImage.Image, tuple => tuple.GetPosition().ToPoint());
+
+            foreach (var missle in missles)
+            {
+                graph.DrawImage(missle.Key, missle.Value);
+            }
         }
 
         //TODO Новый способ
         private void Movement(Player player)
         {
-            /* if(Keyboard.IsKeyDown(KeyDown.W))
+            /* if(Keyboard.IsKeyDown(Key.))
              {
                  mainPlayer.MoveToTop();
              }*/

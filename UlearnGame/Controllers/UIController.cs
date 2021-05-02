@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -11,24 +12,33 @@ namespace UlearnGame.Controllers
     {
         private Form form;
         private Player player;
-        private EnemyController enemyController;
         private Label healthLabel;
         private Label armorLabel;
         private Label waveLabel;
 
-        public UIController(Form form,EnemyController enemyController ,Player player)
+        public int Wave { get; set; }
+
+        public int WaveTime { get; set; }
+
+        public UIController(Form form, WaveController waveController, Player player)
         {
             this.form = form;
             this.player = player;
-            this.enemyController = enemyController;
-
+            Wave = waveController.Wave;
+            WaveTime = waveController.WaveTime;
+            var waveTimer = new Timer
+            {
+                Interval = 1000
+            };
+            waveTimer.Tick += (sender, args) =>
+                {
+                    WaveTime--;
+                };
+            waveTimer.Start();
             healthLabel = new Label
             {
                 Text = $"Health:{player.Health}",
                 ForeColor = Color.White,
-                //Anchor = AnchorStyles.Top,
-                //Size = new Size(form.ClientSize.Width, 50),
-                //TextAlign = ContentAlignment.MiddleCenter,
                 Font = new Font(FontFamily.GenericSansSerif, 15),
                 Dock = DockStyle.Fill
             };
@@ -36,26 +46,20 @@ namespace UlearnGame.Controllers
             {
                 Text = $"Armor:{player.Armor}",
                 ForeColor = Color.White,
-                //Anchor = AnchorStyles.Left,
-                //TextAlign = ContentAlignment.MiddleLeft,
-                //Size = new Size(form.ClientSize.Width, 50),
                 Dock = DockStyle.Fill,
                 Font = new Font(FontFamily.GenericSansSerif, 15)
             };
-           waveLabel = new Label
+            waveLabel = new Label
             {
-                Text = $"Wave:{enemyController.Wave} Time - {enemyController.WaveTime}",
+                Text = $"Wave:{waveController.Wave} Time:{TimeSpan.FromMilliseconds(WaveTime)}",
                 ForeColor = Color.White,
-                //Anchor = AnchorStyles.Left,
-                //TextAlign = ContentAlignment.MiddleLeft,
-                //Size = new Size(form.ClientSize.Width, 50),
                 Dock = DockStyle.Fill,
                 Font = new Font(FontFamily.GenericSansSerif, 15)
             };
 
             var tableLayout = new TableLayoutPanel
             {
-                Size = new Size(form.ClientSize.Width, 50), 
+                Size = new Size(form.ClientSize.Width, 50),
             };
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
@@ -65,8 +69,6 @@ namespace UlearnGame.Controllers
             tableLayout.Controls.Add(healthLabel, 1, 0);
             tableLayout.Controls.Add(waveLabel, 2, 0);
 
-            //form.Controls.Add(healthLabel);
-            //form.Controls.Add(armorLabel);
             form.Controls.Add(tableLayout);
         }
 
@@ -74,8 +76,9 @@ namespace UlearnGame.Controllers
         {
             healthLabel.Text = $"Health:{player.Health}";
             armorLabel.Text = $"Armor:{player.Armor}";
-            waveLabel.Text = $"Wave:{enemyController.Wave} Time - {enemyController.WaveTime}";
+            waveLabel.Text = $"Wave:{Wave} Time:{(WaveTime) }";
         }
 
     }
+
 }
