@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using UlearnGame.Models;
 using UlearnGame.Utilities;
 using UlearnGame.Controllers;
+using System.Linq;
 
 namespace UlearnGame
 {
@@ -12,12 +13,13 @@ namespace UlearnGame
         private Player mainPlayer;
         private readonly Timer updateTimer;
         private EnemyController enemies;
+        private UIController uIController;
 
         private readonly Graphics graphics;
 
         private bool IsDead = false;
 
-        private const int EnemyCount = 7;
+        private const int EnemyCount = 10;
 
         public MainForm()
         {
@@ -33,65 +35,80 @@ namespace UlearnGame
 
             updateTimer.Tick += (sender, args) =>
             {
-                mainPlayer.MakeMove();
-                enemies.MoveEnemies(mainPlayer);
-                enemies.CheckForHit(mainPlayer);
-
-
-                for (int i = 0; i < enemies.Enemies.Count; i++)
-                {
-                    enemies.Enemies[i].Shoot();
-                }
-
-                foreach (var enemy in enemies.Enemies)
-                {
-                    var enemyMissles = enemy.GetMissles();
-                    if (mainPlayer.DeadInConflict(enemyMissles) && mainPlayer.Health < 0)
-                    {
-                        IsDead = true;
-                        updateTimer.Stop();
-                    }
-                }
-
-                if (!IsDead)
-                    Invalidate();
-                else
-                    MessageBox.Show("Потрачено");
+                OnTimerEvent();
 
             };
             updateTimer.Start();
 
         }
+
+        private void OnTimerEvent()
+        {
+            mainPlayer.MakeMove();
+            enemies.MoveEnemies(mainPlayer);
+            enemies.CheckForHit(mainPlayer);
+
+
+            for (int i = 0; i < enemies.Enemies.Count; i++)
+            {
+                enemies.Enemies[i].Shoot();
+            }
+
+            foreach (var enemy in enemies.Enemies)
+            {
+                var enemyMissles = enemy.GetMissles();
+                if (mainPlayer.DeadInConflict(enemyMissles) && mainPlayer.Health < 0)
+                {
+                    IsDead = true;
+                    updateTimer.Stop();
+                }
+            }
+
+            if (!IsDead)
+                Invalidate();
+            else
+                MessageBox.Show("Потрачено");
+        }
+
         private void Init()
         {
             mainPlayer = new Player(this);
             enemies = new EnemyController(EnemyCount, this);
+            uIController = new UIController(this, mainPlayer);
+
 
             KeyDown += new KeyEventHandler(OnKeyDown);
             KeyUp += new KeyEventHandler(OnKeyUp);
 
             Paint += (sender, args) =>
             {
-                var graph = args.Graphics;
-                graph.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.GetPosition().ToPoint());
-
-                foreach (var enemy in enemies.Enemies)
-                    graph.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
-
-                foreach (var missle in mainPlayer.MisslePool)
-                {
-                    if (missle.Direction != Direction.None)
-                        graph.DrawImage(missle.MissleImage.Image, missle.GetPosition().ToPoint());
-                }
-
-                foreach (var enemy in enemies.Enemies)
-                {
-                    foreach (var missle in enemy.GetMissles())
-                        if (missle.Direction != Direction.None)
-                            graph.DrawImage(missle.MissleImage.Image, missle.GetPosition().ToPoint());
-                }
+                OnPaintEvent(args);
             };
         }
+
+        private void OnPaintEvent(PaintEventArgs args)
+        {
+            var graph = args.Graphics;
+            graph.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.GetPosition().ToPoint());
+            foreach (var enemy in enemies.Enemies)
+                graph.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
+
+            foreach (var missle in mainPlayer.MisslePool)
+            {
+                if (missle.Direction != Direction.None)
+                    graph.DrawImage(missle.MissleImage.Image, missle.GetPosition().ToPoint());
+            }
+
+            foreach (var enemy in enemies.Enemies)
+            {
+                foreach (var missle in enemy.GetMissles().Where(missle => missle.Direction != Direction.None))
+                {
+                    graph.DrawImage(missle.MissleImage.Image, missle.GetPosition().ToPoint());
+                }
+            }
+            uIController.Update();
+        }
+
         //TODO Новый способ
         private void Movement(Player player)
         {
