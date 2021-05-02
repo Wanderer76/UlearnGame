@@ -14,6 +14,7 @@ namespace UlearnGame.Interfaces
         public Vector GetPosition();
         public Image GetImage();
         public PictureBox GetSource();
+        public void SetSource(PictureBox box);
         public IEnumerable<IMissle> GetMissles();
         public bool DeadInConflict(IEnumerable<IMissle> missle);
         public int GetHealth();

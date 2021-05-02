@@ -36,7 +36,7 @@ namespace UlearnGame
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(1003, 692);
+            this.ClientSize = new System.Drawing.Size(689, 648);
             this.Name = "MainForm";
             this.Text = "Form1";
             this.ResumeLayout(false);

@@ -15,7 +15,6 @@ namespace UlearnGame
         private EnemyController enemies;
         private UIController uIController;
 
-        private readonly Graphics graphics;
 
         private bool IsDead = false;
 
@@ -25,7 +24,6 @@ namespace UlearnGame
         {
             DoubleBuffered = true;
             InitializeComponent();
-            graphics = CreateGraphics();
             Init();
 
             updateTimer = new Timer
@@ -75,7 +73,7 @@ namespace UlearnGame
         {
             mainPlayer = new Player(this);
             enemies = new EnemyController(EnemyCount, this);
-            uIController = new UIController(this, mainPlayer);
+            uIController = new UIController(this, enemies, mainPlayer);
 
 
             KeyDown += new KeyEventHandler(OnKeyDown);
@@ -91,6 +89,11 @@ namespace UlearnGame
         {
             var graph = args.Graphics;
             graph.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.GetPosition().ToPoint());
+            var playerPosition = mainPlayer.GetPosition();
+            //playerPosition.X += Player.ShipSize/2;
+            //playerPosition.Y += Player.ShipSize;
+            //graph.DrawImage(mainPlayer.SpeedEffect.Image, playerPosition.ToPoint());
+
             foreach (var enemy in enemies.Enemies)
                 graph.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
 
@@ -114,10 +117,10 @@ namespace UlearnGame
         //TODO Новый способ
         private void Movement(Player player)
         {
-           /* if(Keyboard.IsKeyDown(KeyDown.W))
-            {
-                mainPlayer.MoveToTop();
-            }*/
+            /* if(Keyboard.IsKeyDown(KeyDown.W))
+             {
+                 mainPlayer.MoveToTop();
+             }*/
         }
 
 
@@ -128,10 +131,12 @@ namespace UlearnGame
 
             if (keyCode == Keys.W || keyCode == Keys.Up)
             {
+                mainPlayer.SpeedEffect.Visible = true;
                 mainPlayer.IsUp = true;
             }
             if (keyCode == Keys.S || keyCode == Keys.Down)
             {
+                mainPlayer.SpeedEffect.Visible = true;
                 mainPlayer.IsDown = true;
             }
             if (keyCode == Keys.A || keyCode == Keys.Left)
@@ -145,7 +150,6 @@ namespace UlearnGame
             if (keyCode == Keys.Space)
             {
                 mainPlayer.Shoot();
-
             }
         }
 
@@ -154,10 +158,14 @@ namespace UlearnGame
             Keys keyCode = args.KeyCode;
             if (keyCode == Keys.W || keyCode == Keys.Up)
             {
+                mainPlayer.SpeedEffect.Visible = false;
+
                 mainPlayer.IsUp = false;
             }
             if (keyCode == Keys.S || keyCode == Keys.Down)
             {
+                mainPlayer.SpeedEffect.Visible = false;
+
                 mainPlayer.IsDown = false;
             }
             if (keyCode == Keys.A || keyCode == Keys.Left)

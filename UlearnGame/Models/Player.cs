@@ -39,18 +39,23 @@ namespace UlearnGame.Models
 
         private readonly Image missleSource = Properties.Resources.spaceMissiles_013;
 
+        public readonly PictureBox SpeedEffect;
+
         public Player(Form form)
         {
             activeForm = form;
             position = new Vector(activeForm.ClientSize.Width / 2, activeForm.ClientSize.Height / 2);
-
             MisslePool = new List<IMissle>(MissleCapacity);
 
             PlayerImage = new PictureBox
             {
-                Size = new Size(ShipSize, ShipSize),
+                //Size = new Size(ShipSize, ShipSize),
                 Image = new Bitmap(Properties.Resources.spaceShips_001, ShipSize, ShipSize),
-                BackColor = Color.Transparent
+                BackColor = Color.Transparent,
+            };
+            SpeedEffect = new PictureBox
+            {
+                Image = new Bitmap(Properties.Resources.spaceEffects_002, ShipSize/2,ShipSize/2)
             };
 
             PlayerRotations[Direction.Down] = PlayerImage.Image;
