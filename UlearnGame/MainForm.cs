@@ -45,6 +45,7 @@ namespace UlearnGame
         private void OnTimerEvent()
         {
             mainPlayer.MakeMove();
+            //Movement(mainPlayer);
             enemies.MoveEnemies(mainPlayer);
             enemies.CheckForHit(mainPlayer);
 
@@ -106,6 +107,7 @@ namespace UlearnGame
                     graph.DrawImage(missle.MissleImage.Image, missle.GetPosition().ToPoint());
                 }
             }
+
             uIController.Update();
         }
 

@@ -158,10 +158,15 @@ namespace UlearnGame.Models
                 {
                     if (i.GetPosition().Distance(position) < ShipSize)
                     {
-                        PlayerImage.BackColor = Color.White;
                         i.StopMissle();
-                        Health -= i.Damage;
-                        //PlayerImage.BackColor = Color.Transparent;
+                        if (Armor <= 0)
+                            Health -= i.Damage;
+                        else
+                        {
+                            Armor = Armor - i.Damage <= 0 ? 0 : Armor - i.Damage;
+                            Health -= i.Damage / 4;
+
+                        }
                         return true;
 
                     }
