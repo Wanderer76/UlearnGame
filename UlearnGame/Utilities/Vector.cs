@@ -27,6 +27,8 @@ namespace UlearnGame.Utilities
             Y = point.Y;
         }
 
+        
+
         public static bool operator ==(Vector vec1, Vector vec2)
         {
             return vec1.X == vec2.X && vec1.Y == vec2.Y;
@@ -35,9 +37,14 @@ namespace UlearnGame.Utilities
         {
             return !(vec1 == vec2);
         }
+        public static Vector operator -(Vector vec1, Vector vec2)
+        {
+            return new Vector(vec1.X - vec2.X, vec1.Y - vec2.Y);
+        }
 
         public int Length => (int)Math.Sqrt(X * X + Y * Y);
         public Point ToPoint() => new Point(X, Y);
         public int Distance(Vector other) => (int)Math.Sqrt((other.X - X) * (other.X - X) + (other.Y - Y) * (other.Y - Y));
+        public override bool Equals(object obj) => obj is Vector vector && X == vector.X && Y == vector.Y;
     }
 }

@@ -9,8 +9,8 @@ namespace UlearnGame.Models
 {
     public class PlayerMissle : IMissle
     {
-        private const int Width = 20;
-        private const int Height = 25;
+        public const int Width = 20;
+        public const int Height = 25;
 
         public int Damage { get; set; }
         public int MissleSpeed { get; set; }
@@ -42,44 +42,43 @@ namespace UlearnGame.Models
 
             images.Add(Direction.Top, MissleImage.Image);
             images.Add(Direction.Right, RotateImage(images[Direction.Top], RotateFlipType.Rotate90FlipNone));
-            images.Add(Direction.Down,RotateImage(images[Direction.Right], RotateFlipType.Rotate90FlipNone));
+            images.Add(Direction.Down, RotateImage(images[Direction.Right], RotateFlipType.Rotate90FlipNone));
             images.Add(Direction.Left, RotateImage(images[Direction.Down], RotateFlipType.Rotate90FlipNone));
 
 
             movingTimer.Interval = MissleSpeed;
 
-            movingTimer.Tick += new EventHandler((sender, args) =>
+            movingTimer.Tick += (sender, args) =>
             {
                 if (Direction == Direction.Top)
                     Position.Y -= MissleSpeed;
-                
-                if (Direction == Direction.Left)
+
+               /* if (Direction == Direction.Left)
                     Position.X -= MissleSpeed;
-                
+
                 if (Direction == Direction.Right)
                     Position.X += MissleSpeed;
-                
+
                 if (Direction == Direction.Down)
                     Position.Y += MissleSpeed;
-
-
+               */
                 if (Position.Y < 0)
                 {
                     StopMissle();
                 }
-            });
+            };
 
         }
 
         public void StartMissle()
         {
-            MissleImage.Image = images[Direction];
+           // MissleImage.Image = images[Direction];
             movingTimer.Start();
         }
 
         public void SetPosition(int x, int y)
         {
-            Position.X = x + Width;
+            Position.X = x;// + Width;
             Position.Y = y;
         }
 

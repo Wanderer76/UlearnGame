@@ -17,7 +17,8 @@ namespace UlearnGame.Models
         public int Speed { get; set; } = 5;
         public int Damage { get; set; } = 10;
 
-        private int MissleSpeed = 5;
+        public readonly int MissleSpeed = 5;
+        public readonly int MissleCapacity = 5;
 
         private Vector position;
 
@@ -32,7 +33,7 @@ namespace UlearnGame.Models
 
         private readonly Form activeForm;
 
-        public readonly List<IMissle> MisslePool = new List<IMissle>(5);
+        public readonly List<IMissle> MisslePool;
 
         private readonly Dictionary<Direction, Image> PlayerRotations = new Dictionary<Direction, Image>();
 
@@ -43,10 +44,13 @@ namespace UlearnGame.Models
             activeForm = form;
             position = new Vector(activeForm.ClientSize.Width / 2, activeForm.ClientSize.Height / 2);
 
+            MisslePool = new List<IMissle>(MissleCapacity);
+
             PlayerImage = new PictureBox
             {
                 Size = new Size(ShipSize, ShipSize),
-                Image = new Bitmap(Properties.Resources.spaceShips_001, ShipSize, ShipSize)
+                Image = new Bitmap(Properties.Resources.spaceShips_001, ShipSize, ShipSize),
+                BackColor = Color.Transparent
             };
 
             PlayerRotations[Direction.Down] = PlayerImage.Image;
@@ -55,6 +59,7 @@ namespace UlearnGame.Models
                 PlayerRotations.Add((Direction)i, PlayerRotations[(Direction)(i - 1)].RotateImage());
 
             PlayerImage.Image = PlayerRotations[Direction.Top];
+            position.Direction = Direction.Top;
 
             for (var i = 0; i < MisslePool.Capacity; i++)
                 MisslePool.Add(new PlayerMissle(missleSource, Direction.None, MissleSpeed, -2000, -2000));
@@ -137,7 +142,7 @@ namespace UlearnGame.Models
                     missle.Damage = Damage;
                     missle.MissleSpeed = MissleSpeed;
                     missle.Direction = position.Direction;
-                    missle.SetPosition(position.X, position.Y);
+                    missle.SetPosition(position.X + PlayerMissle.Width, position.Y);
                     missle.StartMissle();
                     canShoot = false;
                     shootTimer.Start();
@@ -153,8 +158,10 @@ namespace UlearnGame.Models
                 {
                     if (i.GetPosition().Distance(position) < ShipSize)
                     {
+                        PlayerImage.BackColor = Color.White;
                         i.StopMissle();
                         Health -= i.Damage;
+                        //PlayerImage.BackColor = Color.Transparent;
                         return true;
 
                     }

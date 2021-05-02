@@ -1,7 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using NUnit.Framework;
+using UlearnGame.Interfaces;
 using UlearnGame.Models;
 using UlearnGame.Utilities;
 
@@ -18,7 +19,7 @@ namespace UlearnGameTests
         {
             var form = new Form
             {
-                Size = new Size(width, height)
+                ClientSize = new Size(width, height)
             };
             var player = new Player(form);
             Assert.AreEqual(form.ClientSize.Width / 2, player.GetPosition().X);
@@ -33,7 +34,7 @@ namespace UlearnGameTests
         {
             var form = new Form
             {
-                Size = new Size(1280, 720)
+                ClientSize = new Size(1280, 720)
             };
             var player = new Player(form);
             var startPosition = player.GetPosition();
@@ -52,7 +53,7 @@ namespace UlearnGameTests
         {
             var form = new Form
             {
-                Size = new Size(1280, 720)
+                ClientSize = new Size(1280, 720)
             };
             var player = new Player(form);
             var startPosition = player.GetPosition();
@@ -70,7 +71,7 @@ namespace UlearnGameTests
         {
             var form = new Form
             {
-                Size = new Size(1280, 720)
+                ClientSize = new Size(1280, 720)
             };
             var player = new Player(form);
             var startPosition = player.GetPosition();
@@ -88,7 +89,7 @@ namespace UlearnGameTests
         {
             var form = new Form
             {
-                Size = new Size(1280, 720)
+                ClientSize = new Size(1280, 720)
             };
             var player = new Player(form);
             var startPosition = player.GetPosition();
@@ -160,8 +161,44 @@ namespace UlearnGameTests
             Assert.LessOrEqual(form.ClientSize.Width - player.GetPosition().Y, Player.ShipSize);
         }
         // ----------------------
+        [TestCase(1280 / 2, 720 / 2)]
+        [TestCase(1280 / 2 + EnemyMissle.Width, 720 / 2)]
+        [TestCase(1280 / 2, 720 / 2 + EnemyMissle.Height)]
+        [TestCase(1280 / 2 + EnemyMissle.Width, 720 / 2 + EnemyMissle.Height)]
+        public void TestDead(int x, int y)
+        {
+            var missle = new List<IMissle>
+            {
+                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, x, y),
+                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, x, y)
+            };
+            var form = new Form
+            {
+                ClientSize = new Size(1280, 720)
+            };
+            var player = new Player(form);
+            Assert.IsTrue(player.DeadInConflict(missle));
 
+        }
 
+        [TestCase(0, 0)]
+        [TestCase(1280 / 2 + Player.ShipSize, 720 / 2)]
+        [TestCase(1280 / 2, 720 / 2 + Player.ShipSize)]
+        [TestCase(1280 / 2 + Player.ShipSize, 720 / 2 + Player.ShipSize)]
+        public void TestNotDead(int x, int y)
+        {
+            var missle = new List<IMissle>
+            {
+                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, x, y),
+                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, x, y)
+            };
+            var form = new Form
+            {
+                ClientSize = new Size(1280, 720)
+            };
+            var player = new Player(form);
+            Assert.IsFalse(player.DeadInConflict(missle));
 
+        }
     }
 }

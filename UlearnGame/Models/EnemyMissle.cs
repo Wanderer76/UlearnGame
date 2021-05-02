@@ -8,10 +8,10 @@ using UlearnGame.Utilities;
 
 namespace UlearnGame.Models
 {
-    class EnemyMissle : IMissle
+    public class EnemyMissle : IMissle
     {
-        private const int Width = 20;
-        private const int Height = 25;
+        public const int Width = 20;
+        public const int Height = 25;
 
         public int Damage { get; set; }
         public int MissleSpeed { get; set; }
@@ -26,16 +26,16 @@ namespace UlearnGame.Models
 
         private readonly Dictionary<Direction, Image> images = new Dictionary<Direction, Image>()
         {
-           };
+        };
 
-        public EnemyMissle(Image image, Direction direction, int missleSpeed, int maxHeight ,int x, int y)
+        public EnemyMissle(Image image, Direction direction, int missleSpeed, int maxHeight, int x, int y)
         {
             Direction = direction;
             MissleSpeed = missleSpeed;
 
             images.Add(Direction.Top, new Bitmap(Properties.Resources.spaceMissiles_015, Width, Height));
             images.Add(Direction.Down, RotateImage(images[Direction.Top], RotateFlipType.Rotate180FlipNone));
-           
+
             Position.X = x;
             Position.Y = y;
 
@@ -46,11 +46,8 @@ namespace UlearnGame.Models
                 Width = Width,
                 Height = Height
             };
-           
-            
+
             MissleImage.Image = images[Direction.Down];
-
-
 
             movingTimer.Interval = MissleSpeed;
 
@@ -74,7 +71,7 @@ namespace UlearnGame.Models
 
         public void SetPosition(int x, int y)
         {
-            Position.X = x + Width;
+            Position.X = x;// + Width;
             Position.Y = y;
         }
 

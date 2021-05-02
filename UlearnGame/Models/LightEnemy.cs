@@ -9,9 +9,9 @@ using UlearnGame.Utilities;
 
 namespace UlearnGame.Models
 {
-    class LightEnemy : IEnemy
+    public class LightEnemy : IEnemy
     {
-        private const int LightEnemySize = 50;
+        public const int LightEnemySize = 50;
         public int Speed { get; set; } = 1;
         public int Damage { get; set; } = 15;
 
@@ -77,7 +77,7 @@ namespace UlearnGame.Models
                     missle.Direction = Direction.Down;
                     missle.Damage = Damage;
                     missle.MissleSpeed = MissleSpeed;
-                    missle.SetPosition(Position.X, Position.Y);
+                    missle.SetPosition(Position.X + EnemyMissle.Width, Position.Y);
                     missle.StartMissle();
                     canShoot = false;
                     shootTimer.Start();
