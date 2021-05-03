@@ -71,7 +71,6 @@ namespace UlearnGame.Models
         {
             if (canShoot == true)
             {
-                Debug.WriteLine($"Count - {Missles.Count}");
                 var missle = Missles.FirstOrDefault(missle => missle.Direction == Direction.None);
                 if (missle != null)
                 {

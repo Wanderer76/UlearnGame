@@ -18,7 +18,7 @@ namespace UlearnGame
 
         private bool IsDead = false;
 
-        private const int EnemyCount = 10;
+        private const int EnemyCount = 2;
 
         public MainForm()
         {
@@ -62,6 +62,12 @@ namespace UlearnGame
                 }
             }
 
+            if (waveController.IsWaveEnd())
+            {
+                uIController.Wave = waveController.Wave;
+                enemyController.IncreaseWave();
+            }
+
             if (!IsDead)
                 Invalidate();
             else
@@ -73,15 +79,10 @@ namespace UlearnGame
             mainPlayer = new Player(this);
             enemyController = new EnemyController(EnemyCount, this);
             waveController = new WaveController(enemyController);
-            uIController = new UIController(this, waveController, mainPlayer);
+            uIController = new UIController(this, waveController, enemyController, mainPlayer);
 
             waveController.StartWaves();
-            waveController.OnWaveEnds += () =>
-            {
-                uIController.Wave = waveController.Wave;
-                uIController.WaveTime = waveController.WaveTime;
-                enemyController.IncreaseWave();
-            };
+           
 
             KeyDown += new KeyEventHandler(OnKeyDown);
             KeyUp += new KeyEventHandler(OnKeyUp);

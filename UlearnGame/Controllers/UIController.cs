@@ -12,6 +12,7 @@ namespace UlearnGame.Controllers
     {
         private Form form;
         private Player player;
+        private EnemyController enemyController;
         private Label healthLabel;
         private Label armorLabel;
         private Label waveLabel;
@@ -20,21 +21,13 @@ namespace UlearnGame.Controllers
 
         public int WaveTime { get; set; }
 
-        public UIController(Form form, WaveController waveController, Player player)
+        public UIController(Form form, WaveController waveController, EnemyController enemyController, Player player)
         {
             this.form = form;
             this.player = player;
+            this.enemyController = enemyController;
             Wave = waveController.Wave;
-            WaveTime = waveController.WaveTime;
-            var waveTimer = new Timer
-            {
-                Interval = 1000
-            };
-            waveTimer.Tick += (sender, args) =>
-                {
-                    WaveTime--;
-                };
-            waveTimer.Start();
+
             healthLabel = new Label
             {
                 Text = $"Health:{player.Health}",
@@ -51,7 +44,7 @@ namespace UlearnGame.Controllers
             };
             waveLabel = new Label
             {
-                Text = $"Wave:{waveController.Wave} Time:{TimeSpan.FromMilliseconds(WaveTime)}",
+                Text = $"Wave:{waveController.Wave} Count of enemies:{enemyController.CountOfEnemies - enemyController.DeadCount}",
                 ForeColor = Color.White,
                 Dock = DockStyle.Fill,
                 Font = new Font(FontFamily.GenericSansSerif, 15)
@@ -76,7 +69,7 @@ namespace UlearnGame.Controllers
         {
             healthLabel.Text = $"Health:{player.Health}";
             armorLabel.Text = $"Armor:{player.Armor}";
-            waveLabel.Text = $"Wave:{Wave} Time:{(WaveTime) }";
+            waveLabel.Text = $"Wave:{Wave} Count of enemies:{enemyController.CountOfEnemies - enemyController.DeadCount}";
         }
 
     }
