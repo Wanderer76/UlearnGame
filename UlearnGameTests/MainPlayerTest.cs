@@ -169,8 +169,8 @@ namespace UlearnGameTests
         {
             var missle = new List<IMissle>
             {
-                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, x, y),
-                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, x, y)
+                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, 1280,x, y),
+                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, 1280,x, y)
             };
             var form = new Form
             {
@@ -189,8 +189,8 @@ namespace UlearnGameTests
         {
             var missle = new List<IMissle>
             {
-                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, x, y),
-                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, x, y)
+                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, 1280,x, y),
+                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, 1280,x, y)
             };
             var form = new Form
             {

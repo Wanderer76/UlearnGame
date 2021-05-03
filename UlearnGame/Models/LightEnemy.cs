@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -12,46 +11,51 @@ namespace UlearnGame.Models
     public class LightEnemy : IEnemy
     {
         public const int LightEnemySize = 50;
-        public int Speed { get; set; } = 1;
-        public int Damage { get; set; } = 15;
-
-
-        public readonly int MissleSpeed = 2;
+        public int Speed { get; set; }
+        public int Damage { get; set; }
+        public readonly int MissleSpeed;
         public readonly List<IMissle> Missles;
 
-        private Vector Position;
+        private Vector position;
         private int health = 30;
-        private  PictureBox Enemy;
-        //private readonly Dictionary<Direction, Image> EnemyRotations;
+        private PictureBox Enemy;
+        private readonly Dictionary<Direction, Image> enemyRotations;
         private readonly Timer shootTimer;
         private bool canShoot = false;
         private readonly int randDistance;
         private readonly Form activeForm;
 
-        public LightEnemy(Form form, int missleCount)
+        public LightEnemy(Form form, int missleCount, int missleSpeed = 2, int damage = 15, int speed = 1)
         {
             Enemy = new PictureBox
             {
-                Size = new Size(LightEnemySize+20, LightEnemySize+20),
+                Size = new Size(LightEnemySize + 20, LightEnemySize + 20),
                 Image = new Bitmap(Properties.Resources.spaceShips_004, LightEnemySize, LightEnemySize),
                 BackColor = Color.Red
             };
 
-            //EnemyRotations = new Dictionary<Direction, Image>
-            //{
-            //    { Direction.Down, Enemy.Image }
-            //};
-            //for (var i = 1; i < 4; i++)
-            //    EnemyRotations.Add((Direction)i, EnemyRotations[(Direction)(i - 1)].RotateImage());
+            MissleSpeed = missleSpeed;
+            Damage = damage;
+            Speed = speed;
+
+            enemyRotations = new Dictionary<Direction, Image>
+            {
+                { Direction.Down, Enemy.Image }
+            };
+            for (var i = 1; i < 4; i++)
+                enemyRotations.Add((Direction)i, enemyRotations[(Direction)(i - 1)].RotateImage());
 
             activeForm = form;
 
             Missles = new List<IMissle>(missleCount);
             for (var i = 0; i < Missles.Capacity; i++)
-                Missles.Add(new EnemyMissle(Properties.Resources.spaceMissiles_015, Direction.None, MissleSpeed, activeForm.ClientSize.Height, -2000, -2000));
+                Missles.Add(new EnemyMissle(Properties.Resources.spaceMissiles_015, Direction.None, MissleSpeed, activeForm.ClientSize.Height, activeForm.ClientSize.Width, -2000, -2000));
 
-            Random random = new Random();
-            Position = new Vector(random.Next(-150, activeForm.ClientSize.Width), -50);
+            var random = new Random();
+            position = new Vector(random.Next(-150, activeForm.ClientSize.Width), -50);
+            //var yCoord = random.Next(-activeForm.ClientSize.Height, activeForm.ClientSize.Height);
+            //Position = new Vector(random.Next(0,activeForm.ClientSize.Width), yCoord < 0? -50: activeForm.ClientSize.Height);
+
             randDistance = random.Next(LightEnemySize, 200);
 
             shootTimer = new Timer
@@ -74,10 +78,10 @@ namespace UlearnGame.Models
                 var missle = Missles.FirstOrDefault(missle => missle.Direction == Direction.None);
                 if (missle != null)
                 {
-                    missle.Direction = Direction.Down;
+                    missle.Direction = position.Direction;
                     missle.Damage = Damage;
                     missle.MissleSpeed = MissleSpeed;
-                    missle.SetPosition(Position.X + EnemyMissle.Width, Position.Y);
+                    missle.SetPosition(position.X + EnemyMissle.Width, position.Y);
                     missle.StartMissle();
                     canShoot = false;
                     shootTimer.Start();
@@ -89,59 +93,63 @@ namespace UlearnGame.Models
         {
             int distance = 120;
 
-            if (playerPosition.Distance(Position) > distance)
+            if (playerPosition.Distance(position) > distance)
             {
-
-                if (playerPosition.X > Position.X)
+                if (playerPosition.X > position.X)
                 {
-                    Position.Direction = Direction.Right;
-                    Position.X += Speed;
+                    // Enemy.Image = EnemyRotations[Direction.Right];
+                    // Position.Direction = Direction.Right;
+                    position.X += Speed;
                 }
-                if (playerPosition.X < Position.X)
+                if (playerPosition.X < position.X)
                 {
-                    Position.Direction = Direction.Left;
-                    Position.X -= Speed;
+                    //Position.Direction = Direction.Left;
+                    //Enemy.Image = EnemyRotations[Direction.Left];
+                    position.X -= Speed;
                 }
-                if (playerPosition.Y > Position.Y && Position.Y < (activeForm.ClientSize.Height / 2 - randDistance))
+                if (playerPosition.Y > position.Y && position.Y < (activeForm.ClientSize.Height / 2 - randDistance))
                 {
-                    Position.Direction = Direction.Down;
-                    //Enemy.Image = EnemyRotations[Direction.Down];
-                    Position.Y += Speed;
+                    position.Direction = Direction.Down;
+                    Enemy.Image = enemyRotations[Direction.Down];
+                    position.Y += Speed;
                 }
-                if (playerPosition.Y < Position.Y)
+                if (playerPosition.Y < position.Y)
                 {
-                    Position.Direction = Direction.Top;
-                    Position.Y -= Speed;
+                    position.Direction = Direction.Top;
+                    Enemy.Image = enemyRotations[Direction.Top];
+                    position.Y -= Speed;
                 }
             }
+
+
         }
 
-        public Vector GetPosition() => Position;
+        public Vector GetPosition() => position;
 
         public Image GetImage() => Enemy.Image;
 
         public void MoveFromPoint(Vector position)
         {
-            if (position.X > Position.X)
+            if (position.X > this.position.X)
             {
-                Position.Direction = Direction.Left;
-                Position.X -= Speed;
+                this.position.Direction = Direction.Left;
+                this.position.X -= Speed;
             }
-            if (position.X < Position.X)
+            if (position.X < this.position.X)
             {
-                Position.Direction = Direction.Right;
-                Position.X += Speed;
+                this.position.Direction = Direction.Right;
+                this.position.X += Speed;
             }
-            if (position.Y > Position.Y)
+            if (position.Y > this.position.Y)
             {
-                Position.Direction = Direction.Top;
-                Position.Y -= Speed;
+                this.position.Direction = Direction.Top;
+                this.position.Y -= Speed;
             }
-            //if (position.Y < Position.Y)
-            //{
-            //    Position.Direction = Direction.Down;
-            //    Position.Y += Speed;
-            //}
+            if (position.Y < this.position.Y)
+            {
+                this.position.Direction = Direction.Down;
+                this.position.Y += Speed;
+            }
         }
 
         public bool DeadInConflict(IEnumerable<IMissle> missle)
@@ -150,7 +158,7 @@ namespace UlearnGame.Models
             {
                 if (i is PlayerMissle)
                 {
-                    if (i.GetPosition().Distance(Position) < LightEnemySize)
+                    if (i.GetPosition().Distance(position) < LightEnemySize)
                     {
                         i.StopMissle();
                         health -= i.Damage;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using NUnit.Framework;
@@ -20,8 +19,8 @@ namespace UlearnGameTests
         {
             var missles = new List<IMissle>
             {
-                new PlayerMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Top, 5, startX, startY),
-                new EnemyMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Top, 5, 30,startX, startY),
+                new PlayerMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Top, 5,1203,123, startX, startY),
+                new EnemyMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Top, 5, 30,123,startX, startY),
             };
             var timer = new Timer
             {
@@ -49,8 +48,8 @@ namespace UlearnGameTests
         {
             var missles = new List<IMissle>
             {
-                new PlayerMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Down, 5, startX, startY),
-                new EnemyMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Down, 5, 30,startX, startY)
+                new PlayerMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Down, 5,1203,123, startX, startY),
+                new EnemyMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Down, 5, 30,123,startX, startY)
             };
             var timer = new Timer
             {
@@ -79,10 +78,10 @@ namespace UlearnGameTests
         {
             var missles = new List<IMissle>
             {
-                new PlayerMissle(new Bitmap(PlayerMissle.Width,PlayerMissle.Height),Direction.Top,5, startX,startY),
-                new EnemyMissle (new Bitmap(EnemyMissle.Width,EnemyMissle.Height),Direction.Top,5,startY*2,startX,startY),
-                new PlayerMissle(new Bitmap(PlayerMissle.Width,PlayerMissle.Height),Direction.Down,5, startX,startY),
-                new EnemyMissle (new Bitmap(EnemyMissle.Width,EnemyMissle.Height),Direction.Down,5,startY*2,startX,startY)
+                new PlayerMissle(new Bitmap(PlayerMissle.Width,PlayerMissle.Height),Direction.Top,5,1203,123, startX,startY),
+                new EnemyMissle (new Bitmap(EnemyMissle.Width,EnemyMissle.Height),Direction.Top,5,startY*2,123,startX,startY),
+                new PlayerMissle(new Bitmap(PlayerMissle.Width,PlayerMissle.Height),Direction.Down,5,1203,123, startX,startY),
+                new EnemyMissle (new Bitmap(EnemyMissle.Width,EnemyMissle.Height),Direction.Down,5,startY*2,123,startX,startY)
             };
             var timer = new Timer
             {
@@ -114,10 +113,10 @@ namespace UlearnGameTests
         {
             var missles = new List<IMissle>
             {
-                new PlayerMissle(new Bitmap(PlayerMissle.Width,PlayerMissle.Height),Direction.Top,5, 0,0),
-                new EnemyMissle (new Bitmap(EnemyMissle.Width,EnemyMissle.Height),Direction.Top,5,100,0,0),
-                new PlayerMissle(new Bitmap(PlayerMissle.Width,PlayerMissle.Height),Direction.Down,5, 0,0),
-                new EnemyMissle (new Bitmap(EnemyMissle.Width,EnemyMissle.Height),Direction.Down,5,100,0,0)
+                new PlayerMissle(new Bitmap(PlayerMissle.Width,PlayerMissle.Height),Direction.Top,5,1203,1233 ,0,0),
+                new EnemyMissle (new Bitmap(EnemyMissle.Width,EnemyMissle.Height),Direction.Top,5,100,1203,0,0),
+                new PlayerMissle(new Bitmap(PlayerMissle.Width,PlayerMissle.Height),Direction.Down,5,1203,123, 0,0),
+                new EnemyMissle (new Bitmap(EnemyMissle.Width,EnemyMissle.Height),Direction.Down,5,100,1203,0,0)
             };
 
             foreach (var missle in missles)

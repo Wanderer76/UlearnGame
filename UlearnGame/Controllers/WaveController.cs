@@ -2,11 +2,10 @@
 
 namespace UlearnGame.Controllers
 {
-    class WaveController
+    public class WaveController
     {
         public int Wave { get; private set; } = 1;
         private EnemyController enemyController;
-
         private Timer delayTimer;
 
         public WaveController(EnemyController enemyController)

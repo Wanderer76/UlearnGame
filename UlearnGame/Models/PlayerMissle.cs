@@ -17,77 +17,77 @@ namespace UlearnGame.Models
         public Direction Direction { get; set; }
         public PictureBox MissleImage { get; private set; }
 
-        public Vector Position;
+        private Vector position;
+        private readonly Timer movingTimer;
+        private readonly Dictionary<Direction, Image> images;
 
-        private readonly Timer movingTimer = new Timer();
-
-
-        private readonly Dictionary<Direction, Image> images = new Dictionary<Direction, Image>();
-
-        public PlayerMissle(Image image, Direction direction, int missleSpeed, int x, int y)
+        public PlayerMissle(Image image, Direction direction, int missleSpeed, int maxHeight, int maxWidth, int x, int y)
         {
             Direction = direction;
             MissleSpeed = missleSpeed;
 
-            Position.X = x;
-            Position.Y = y;
+            position = new Vector(x, y);
 
             MissleImage = new PictureBox
             {
-                Image = new Bitmap(image, Width, Height),
                 BackColor = Color.Transparent,
                 Width = Width,
                 Height = Height
             };
 
-            images.Add(Direction.Top, MissleImage.Image);
+            images = new Dictionary<Direction, Image>();
+            images.Add(Direction.Top, new Bitmap(image, Width, Height));
             images.Add(Direction.Right, RotateImage(images[Direction.Top], RotateFlipType.Rotate90FlipNone));
             images.Add(Direction.Down, RotateImage(images[Direction.Right], RotateFlipType.Rotate90FlipNone));
             images.Add(Direction.Left, RotateImage(images[Direction.Down], RotateFlipType.Rotate90FlipNone));
 
-
-            movingTimer.Interval = MissleSpeed;
+            movingTimer = new Timer
+            {
+                Interval = MissleSpeed
+            };
 
             movingTimer.Tick += (sender, args) =>
             {
                 if (Direction == Direction.Top)
-                    Position.Y -= MissleSpeed;
+                    position.Y -= MissleSpeed;
 
-               /* if (Direction == Direction.Left)
-                    Position.X -= MissleSpeed;
+                if (Direction == Direction.Left)
+                    position.X -= MissleSpeed;
 
                 if (Direction == Direction.Right)
-                    Position.X += MissleSpeed;
+                    position.X += MissleSpeed;
 
                 if (Direction == Direction.Down)
-                    Position.Y += MissleSpeed;
-               */
-                if (Position.Y < 0)
+                    position.Y += MissleSpeed;
+
+                if (position.Y < 0 || position.Y > maxHeight)
+                {
+                    StopMissle();
+                }
+                if (position.X < 0 || position.X > maxWidth)
                 {
                     StopMissle();
                 }
             };
-
         }
 
         public void StartMissle()
         {
-           // MissleImage.Image = images[Direction];
+            MissleImage.Image = images[Direction];
             movingTimer.Start();
         }
 
         public void SetPosition(int x, int y)
         {
-            Position.X = x;// + Width;
-            Position.Y = y;
+            position.X = x;
+            position.Y = y;
         }
 
         public void StopMissle()
         {
-            Position = new Vector(-1000, -1000);
+            position = new Vector(-1000, -1000);
             Direction = Direction.None;
             movingTimer.Stop();
-
         }
 
         private static Image RotateImage(Image img, RotateFlipType angle)
@@ -102,6 +102,6 @@ namespace UlearnGame.Models
             bmp.RotateFlip(angle);
             return bmp;
         }
-        public Vector GetPosition() => Position;
+        public Vector GetPosition() => position;
     }
 }

@@ -6,14 +6,20 @@ using UlearnGame.Models;
 
 namespace UlearnGame.Controllers
 {
-    class EnemyController
+    public class EnemyController
     {
         public bool IsEnd { get; private set; } = false;
 
         private int currentWave = 1;
         private int MissleCount = 1;
         private int spawnEnemiesCount = 0;
-        public int spawnDelay = 1200;
+
+        private int damage = 15;
+        private int speed = 1;
+        private int missleSpeed = 2;
+
+        private int spawnDelay = 1200;
+
         private readonly Timer spawnTimer;
 
         public int CountOfEnemies { get; private set; }
@@ -25,6 +31,7 @@ namespace UlearnGame.Controllers
         {
             CountOfEnemies = count;
             Enemies = new List<IEnemy>(count);
+
             spawnTimer = new Timer
             {
                 Interval = spawnDelay
@@ -33,7 +40,7 @@ namespace UlearnGame.Controllers
             {
                 if (spawnEnemiesCount < Enemies.Capacity && Enemies.Count < 10)
                 {
-                    Enemies.Add(new LightEnemy(form, MissleCount));
+                    Enemies.Add(new LightEnemy(form, MissleCount, missleSpeed, damage, speed));
                     spawnEnemiesCount++;
                 }
                 else if (DeadCount == CountOfEnemies)
@@ -63,7 +70,7 @@ namespace UlearnGame.Controllers
                     if (i == j)
                         continue;
 
-                    if (Enemies[i].GetPosition().Distance(Enemies[j].GetPosition()) < 100)
+                    if (Enemies[i].GetPosition().Distance(Enemies[j].GetPosition()) < 120)
                     {
                         Enemies[i].MoveFromPoint(Enemies[j].GetPosition());
                     }
@@ -95,7 +102,13 @@ namespace UlearnGame.Controllers
             CountOfEnemies++;
             Enemies.Capacity = CountOfEnemies;
             currentWave++;
-            MissleCount = currentWave % 2 == 0 ? MissleCount++ : MissleCount;
+            if (currentWave % 2 == 0)
+            {
+                MissleCount = MissleCount + 1 > 6 ? 6 : MissleCount++;
+                damage = damage + 1 > 30 ? 30 : damage++;
+                speed = speed + 1 > 3 ? 3 : speed++;
+                missleSpeed = missleSpeed + 1 > 7 ? 7 : missleSpeed++;
+            }
             spawnDelay = spawnDelay < 900 ? 900 : spawnDelay - 50;
             spawnTimer.Interval = spawnDelay;
         }

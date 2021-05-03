@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Text;
+﻿using System.Drawing;
 using System.Windows.Forms;
 using UlearnGame.Models;
 
 namespace UlearnGame.Controllers
 {
-    class UIController
+    public class UIController
     {
-        private Form form;
-        private Player player;
-        private EnemyController enemyController;
-        private Label healthLabel;
-        private Label armorLabel;
-        private Label waveLabel;
+        private readonly Player player;
+        private readonly EnemyController enemyController;
+        private readonly Label healthLabel;
+        private readonly Label armorLabel;
+        private readonly Label waveLabel;
 
         public int Wave { get; set; }
 
@@ -23,7 +18,6 @@ namespace UlearnGame.Controllers
 
         public UIController(Form form, WaveController waveController, EnemyController enemyController, Player player)
         {
-            this.form = form;
             this.player = player;
             this.enemyController = enemyController;
             Wave = waveController.Wave;

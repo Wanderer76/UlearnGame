@@ -55,7 +55,7 @@ namespace UlearnGame.Models
             };
             SpeedEffect = new PictureBox
             {
-                Image = new Bitmap(Properties.Resources.spaceEffects_002, ShipSize/2,ShipSize/2)
+                Image = new Bitmap(Properties.Resources.spaceEffects_002, ShipSize / 2, ShipSize / 2)
             };
 
             PlayerRotations[Direction.Down] = PlayerImage.Image;
@@ -67,7 +67,7 @@ namespace UlearnGame.Models
             position.Direction = Direction.Top;
 
             for (var i = 0; i < MisslePool.Capacity; i++)
-                MisslePool.Add(new PlayerMissle(missleSource, Direction.None, MissleSpeed, -2000, -2000));
+                MisslePool.Add(new PlayerMissle(missleSource, Direction.None, MissleSpeed, activeForm.ClientSize.Height, activeForm.ClientSize.Width, -2000, -2000));
 
             shootTimer = new Timer
             {
@@ -100,14 +100,14 @@ namespace UlearnGame.Models
             }
             if (IsRight && position.X + PlayerImage.Width < activeForm.ClientSize.Width)
             {
-                //  position.Direction = Direction.Right;
-                //  PlayerImage.Image = PlayerRotations[Direction.Right];
+                //position.Direction = Direction.Right;
+                //PlayerImage.Image = PlayerRotations[Direction.Right];
                 position.X += Speed;
             }
             if (IsLeft && position.X > 0)
             {
-                //   position.Direction = Direction.Left;
-                //  PlayerImage.Image = PlayerRotations[Direction.Left];
+                //position.Direction = Direction.Left;
+                //PlayerImage.Image = PlayerRotations[Direction.Left];
                 position.X -= Speed;
             }
         }

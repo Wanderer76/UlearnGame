@@ -18,7 +18,7 @@ namespace UlearnGame
 
         private bool IsDead = false;
 
-        private const int EnemyCount = 2;
+        private const int EnemyCount = 15;
 
         public MainForm()
         {
