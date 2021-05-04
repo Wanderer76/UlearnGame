@@ -22,10 +22,9 @@ namespace UlearnGame.Models
         private readonly Dictionary<Direction, Image> enemyRotations;
         private readonly Timer shootTimer;
         private bool canShoot = false;
-        private readonly int randDistance;
         private readonly Form activeForm;
 
-        public LightEnemy(Form form, int missleCount, int missleSpeed = 2, int damage = 15, int speed = 1)
+        public LightEnemy(Form form, int missleCount, int missleSpeed = 2, int shootInterval = 1000 ,int damage = 15, int speed = 1)
         {
             Enemy = new PictureBox
             {
@@ -49,18 +48,25 @@ namespace UlearnGame.Models
 
             Missles = new List<IMissle>(missleCount);
             for (var i = 0; i < Missles.Capacity; i++)
-                Missles.Add(new EnemyMissle(Properties.Resources.spaceMissiles_015, Direction.None, MissleSpeed, activeForm.ClientSize.Height, activeForm.ClientSize.Width, -2000, -2000));
+            {
+                Missles.Add(
+                    new EnemyMissle(
+                        Properties.Resources.spaceMissiles_015,
+                        Direction.None,
+                        missleSpeed,
+                        activeForm.ClientSize.Height,
+                        activeForm.ClientSize.Width,
+                        -2000,
+                        -2000)
+                    );
+            }
 
             var random = new Random();
             position = new Vector(random.Next(-150, activeForm.ClientSize.Width), -50);
-            //var yCoord = random.Next(-activeForm.ClientSize.Height, activeForm.ClientSize.Height);
-            //Position = new Vector(random.Next(0,activeForm.ClientSize.Width), yCoord < 0? -50: activeForm.ClientSize.Height);
-
-            randDistance = random.Next(LightEnemySize, 200);
 
             shootTimer = new Timer
             {
-                Interval = 1000
+                Interval = shootInterval
             };
 
             shootTimer.Tick += (sender, args) =>
@@ -93,7 +99,7 @@ namespace UlearnGame.Models
         {
             int distance = 120;
 
-            if (playerPosition.Distance(position) > distance)
+            if (position.Distance(playerPosition) >= distance)
             {
                 if (playerPosition.X > position.X)
                 {
@@ -101,27 +107,25 @@ namespace UlearnGame.Models
                     // Position.Direction = Direction.Right;
                     position.X += Speed;
                 }
-                if (playerPosition.X < position.X)
+                else if (playerPosition.X < position.X)
                 {
                     //Position.Direction = Direction.Left;
                     //Enemy.Image = EnemyRotations[Direction.Left];
                     position.X -= Speed;
                 }
-                if (playerPosition.Y > position.Y && position.Y < (activeForm.ClientSize.Height / 2 - randDistance))
+                if (playerPosition.Y > position.Y && position.Y < (activeForm.ClientSize.Height / 2))
                 {
                     position.Direction = Direction.Down;
                     Enemy.Image = enemyRotations[Direction.Down];
                     position.Y += Speed;
                 }
-                if (playerPosition.Y < position.Y)
+                else if (playerPosition.Y < position.Y)
                 {
-                    position.Direction = Direction.Top;
-                    Enemy.Image = enemyRotations[Direction.Top];
+                    //position.Direction = Direction.Top;
+                    //Enemy.Image = enemyRotations[Direction.Top];
                     position.Y -= Speed;
                 }
             }
-
-
         }
 
         public Vector GetPosition() => position;
@@ -130,7 +134,7 @@ namespace UlearnGame.Models
 
         public void MoveFromPoint(Vector position)
         {
-            if (position.X > this.position.X)
+            if (position.X >= this.position.X)
             {
                 this.position.Direction = Direction.Left;
                 this.position.X -= Speed;
@@ -140,7 +144,7 @@ namespace UlearnGame.Models
                 this.position.Direction = Direction.Right;
                 this.position.X += Speed;
             }
-            if (position.Y > this.position.Y)
+            if (position.Y >= this.position.Y || this.position.Y> activeForm.ClientSize.Height/2)
             {
                 this.position.Direction = Direction.Top;
                 this.position.Y -= Speed;
@@ -172,16 +176,9 @@ namespace UlearnGame.Models
         public PictureBox GetSource() => Enemy;
 
         public int GetHealth() => health;
-        public IEnumerable<IMissle> GetMissles()
-        {
-            foreach (var missle in Missles)
-                yield return missle;
-        }
+        public IEnumerable<IMissle> GetMissles() => Missles;
 
-        public void DamageToHealth(int damage)
-        {
-            health -= damage;
-        }
+        public void DamageToHealth(int damage) => health -= damage;
 
         public void SetSource(PictureBox box) => Enemy = box;
     }

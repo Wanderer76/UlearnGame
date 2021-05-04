@@ -17,6 +17,7 @@ namespace UlearnGame.Controllers
         private int damage = 15;
         private int speed = 1;
         private int missleSpeed = 2;
+        private int shootInterval = 1000;
 
         private int spawnDelay = 1200;
 
@@ -38,9 +39,9 @@ namespace UlearnGame.Controllers
             };
             spawnTimer.Tick += (sender, args) =>
             {
-                if (spawnEnemiesCount < Enemies.Capacity && Enemies.Count < 10)
+                if (spawnEnemiesCount < Enemies.Capacity && Enemies.Count < 15)
                 {
-                    Enemies.Add(new LightEnemy(form, MissleCount, missleSpeed, damage, speed));
+                    Enemies.Add(new LightEnemy(form, MissleCount, missleSpeed, shootInterval, damage, speed));
                     spawnEnemiesCount++;
                 }
                 else if (DeadCount == CountOfEnemies)
@@ -99,17 +100,18 @@ namespace UlearnGame.Controllers
 
         public void IncreaseWave()
         {
-            CountOfEnemies++;
+            CountOfEnemies += 5;
             Enemies.Capacity = CountOfEnemies;
             currentWave++;
+            MissleCount = MissleCount + 1 > 6 ? 6 : MissleCount++;
+            shootInterval = shootInterval <= 500 ? 500 : shootInterval - 50;
             if (currentWave % 2 == 0)
             {
-                MissleCount = MissleCount + 1 > 6 ? 6 : MissleCount++;
                 damage = damage + 1 > 30 ? 30 : damage++;
-                speed = speed + 1 > 3 ? 3 : speed++;
-                missleSpeed = missleSpeed + 1 > 7 ? 7 : missleSpeed++;
+                speed = speed + 1 > 5 ? 5 : speed++;
+                missleSpeed = missleSpeed + 1 > 9 ? 9 : missleSpeed++;
             }
-            spawnDelay = spawnDelay < 900 ? 900 : spawnDelay - 50;
+            spawnDelay = spawnDelay < 200 ? 200 : spawnDelay - 50;
             spawnTimer.Interval = spawnDelay;
         }
 

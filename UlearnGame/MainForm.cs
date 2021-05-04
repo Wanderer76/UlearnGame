@@ -25,7 +25,6 @@ namespace UlearnGame
             DoubleBuffered = true;
             InitializeComponent();
             Init();
-
             updateTimer = new Timer
             {
                 Interval = 15
@@ -49,7 +48,11 @@ namespace UlearnGame
 
             for (int i = 0; i < enemyController.Enemies.Count; i++)
             {
-                enemyController.Enemies[i].Shoot();
+                var enemyPosition = enemyController.Enemies[i].GetPosition();
+                if (Math.Abs(enemyPosition.X - mainPlayer.GetPosition().X) <= Player.ShipSize*2)
+                {
+                    enemyController.Enemies[i].Shoot();
+                }
             }
 
             foreach (var enemy in enemyController.Enemies)
@@ -82,7 +85,7 @@ namespace UlearnGame
             uIController = new UIController(this, waveController, enemyController, mainPlayer);
 
             waveController.StartWaves();
-           
+
 
             KeyDown += new KeyEventHandler(OnKeyDown);
             KeyUp += new KeyEventHandler(OnKeyUp);

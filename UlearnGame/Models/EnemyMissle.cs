@@ -92,10 +92,9 @@ namespace UlearnGame.Models
 
         public void StopMissle()
         {
-            position = new Vector(-1000, -1000);
             Direction = Direction.None;
+            position = new Vector(-1000, -1000);
             movingTimer.Stop();
-
         }
 
         private static Image RotateImage(Image img, RotateFlipType angle)
