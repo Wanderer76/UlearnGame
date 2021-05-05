@@ -140,10 +140,9 @@ namespace UlearnGame.Models
         {
             if (canShoot == true)
             {
-                var missle = MisslePool.FirstOrDefault(missle => missle.Direction == Direction.None);
+                var missle = MisslePool.FirstOrDefault(missl => missl.GetPosition().Direction == Direction.None);
                 if (missle != null)
                 {
-                    missle.Direction = position.Direction;
                     missle.Damage = Damage;
                     missle.MissleSpeed = MissleSpeed;
                     missle.Direction = position.Direction;

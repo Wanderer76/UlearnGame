@@ -81,7 +81,7 @@ namespace UlearnGame.Models
         {
             if (canShoot == true)
             {
-                var missle = Missles.FirstOrDefault(missle => missle.Direction == Direction.None);
+                var missle = Missles.FirstOrDefault(missl => missl.GetPosition().Direction == Direction.None);
                 if (missle != null)
                 {
                     missle.Direction = position.Direction;

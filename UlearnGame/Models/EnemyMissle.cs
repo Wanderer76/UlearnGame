@@ -16,7 +16,7 @@ namespace UlearnGame.Models
 
         public int Damage { get; set; }
         public int MissleSpeed { get; set; }
-        public Direction Direction { get; set; }
+        public Direction Direction { get => position.Direction; set => position.Direction = value; }
         public PictureBox MissleImage { get; private set; }
 
         private Vector position;
@@ -26,7 +26,6 @@ namespace UlearnGame.Models
 
         public EnemyMissle(Image image, Direction direction, int missleSpeed, int maxHeight, int maxWidth, int x, int y)
         {
-            Direction = direction;
             MissleSpeed = missleSpeed;
 
             images = new Dictionary<Direction, Image>();
@@ -35,7 +34,7 @@ namespace UlearnGame.Models
             images.Add(Direction.Down, RotateImage(images[Direction.Top], RotateFlipType.Rotate180FlipNone));
             images.Add(Direction.Left, RotateImage(images[Direction.Down], RotateFlipType.Rotate90FlipNone));
 
-            position = new Vector(x, y);
+            position = new Vector { X = x, Y = y, Direction = direction };
 
             MissleImage = new PictureBox
             {

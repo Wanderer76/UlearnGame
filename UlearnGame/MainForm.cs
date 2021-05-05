@@ -5,6 +5,7 @@ using UlearnGame.Models;
 using UlearnGame.Utilities;
 using UlearnGame.Controllers;
 using System.Linq;
+using System.Windows.Input;
 
 namespace UlearnGame
 {
@@ -41,7 +42,7 @@ namespace UlearnGame
         private void OnTimerEvent()
         {
             mainPlayer.MakeMove();
-            //Movement(mainPlayer);
+            Movement(mainPlayer);
             enemyController.MoveEnemies(mainPlayer);
             enemyController.CheckForHit(mainPlayer);
 
@@ -49,7 +50,7 @@ namespace UlearnGame
             for (int i = 0; i < enemyController.Enemies.Count; i++)
             {
                 var enemyPosition = enemyController.Enemies[i].GetPosition();
-                if (Math.Abs(enemyPosition.X - mainPlayer.GetPosition().X) <= Player.ShipSize*2)
+                if (Math.Abs(enemyPosition.X - mainPlayer.GetPosition().X) <= Player.ShipSize * 2)
                 {
                     enemyController.Enemies[i].Shoot();
                 }
@@ -85,10 +86,6 @@ namespace UlearnGame
             uIController = new UIController(this, waveController, enemyController, mainPlayer);
 
             waveController.StartWaves();
-
-
-            KeyDown += new KeyEventHandler(OnKeyDown);
-            KeyUp += new KeyEventHandler(OnKeyUp);
 
             Paint += (sender, args) =>
             {
@@ -131,64 +128,25 @@ namespace UlearnGame
         //TODO Новый способ
         private void Movement(Player player)
         {
-            /* if(Keyboard.IsKeyDown(Key.))
-             {
-                 mainPlayer.MoveToTop();
-             }*/
-        }
-
-
-        //Старый
-        private void OnKeyDown(object sender, KeyEventArgs args)
-        {
-            Keys keyCode = args.KeyCode;
-
-            if (keyCode == Keys.W || keyCode == Keys.Up)
+            if (Keyboard.IsKeyDown(Key.W))
             {
-                mainPlayer.SpeedEffect.Visible = true;
-                mainPlayer.IsUp = true;
+                player.MoveToTop();
             }
-            if (keyCode == Keys.S || keyCode == Keys.Down)
+            else if (Keyboard.IsKeyDown(Key.S))
             {
-                mainPlayer.SpeedEffect.Visible = true;
-                mainPlayer.IsDown = true;
+                player.MoveToDown();
             }
-            if (keyCode == Keys.A || keyCode == Keys.Left)
+            if (Keyboard.IsKeyDown(Key.D))
             {
-                mainPlayer.IsLeft = true;
+                player.MoveToRight();
             }
-            if (keyCode == Keys.D || keyCode == Keys.Right)
+            else if (Keyboard.IsKeyDown(Key.A))
             {
-                mainPlayer.IsRight = true;
+                player.MoveToLeft();
             }
-            if (keyCode == Keys.Space)
+            if (Keyboard.IsKeyDown(Key.Space))
             {
-                mainPlayer.Shoot();
-            }
-        }
-
-        private void OnKeyUp(object sender, KeyEventArgs args)
-        {
-            Keys keyCode = args.KeyCode;
-            if (keyCode == Keys.W || keyCode == Keys.Up)
-            {
-                mainPlayer.SpeedEffect.Visible = false;
-
-                mainPlayer.IsUp = false;
-            }
-            if (keyCode == Keys.S || keyCode == Keys.Down)
-            {
-                mainPlayer.SpeedEffect.Visible = false;
-
-                mainPlayer.IsDown = false;
-            }
-            if (keyCode == Keys.A || keyCode == Keys.Left)
-            {
-                mainPlayer.IsLeft = false;
-            }
-            if (keyCode == Keys.D || keyCode == Keys.Right)
-            {
-                mainPlayer.IsRight = false;
+                player.Shoot();
             }
         }
 

@@ -14,7 +14,7 @@ namespace UlearnGame.Models
 
         public int Damage { get; set; }
         public int MissleSpeed { get; set; }
-        public Direction Direction { get; set; }
+        public Direction Direction { get => position.Direction; set => position.Direction = value; }
         public PictureBox MissleImage { get; private set; }
 
         private Vector position;
@@ -23,10 +23,15 @@ namespace UlearnGame.Models
 
         public PlayerMissle(Image image, Direction direction, int missleSpeed, int maxHeight, int maxWidth, int x, int y)
         {
-            Direction = direction;
+            //Direction = direction;
             MissleSpeed = missleSpeed;
 
-            position = new Vector(x, y);
+            position = new Vector
+            {
+                X = x,
+                Y = y,
+                Direction = direction
+            };
 
             MissleImage = new PictureBox
             {
@@ -48,16 +53,16 @@ namespace UlearnGame.Models
 
             movingTimer.Tick += (sender, args) =>
             {
-                if (Direction == Direction.Top)
+                if (position.Direction == Direction.Top)
                     position.Y -= MissleSpeed;
 
-                if (Direction == Direction.Left)
+                if (position.Direction == Direction.Left)
                     position.X -= MissleSpeed;
 
-                if (Direction == Direction.Right)
+                if (position.Direction == Direction.Right)
                     position.X += MissleSpeed;
 
-                if (Direction == Direction.Down)
+                if (position.Direction == Direction.Down)
                     position.Y += MissleSpeed;
 
                 if (position.Y < 0 || position.Y > maxHeight)
@@ -73,7 +78,7 @@ namespace UlearnGame.Models
 
         public void StartMissle()
         {
-            MissleImage.Image = images[Direction];
+            MissleImage.Image = images[position.Direction];
             movingTimer.Start();
         }
 
@@ -86,7 +91,7 @@ namespace UlearnGame.Models
         public void StopMissle()
         {
             position = new Vector(-1000, -1000);
-            Direction = Direction.None;
+            position.Direction = Direction.None;
             movingTimer.Stop();
         }
 
