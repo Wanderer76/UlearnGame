@@ -162,15 +162,15 @@ namespace UlearnGameTests
         }
         // ----------------------
         [TestCase(1280 / 2, 720 / 2)]
-        [TestCase(1280 / 2 + EnemyMissle.Width, 720 / 2)]
-        [TestCase(1280 / 2, 720 / 2 + EnemyMissle.Height)]
-        [TestCase(1280 / 2 + EnemyMissle.Width, 720 / 2 + EnemyMissle.Height)]
+        [TestCase(1280 / 2 + LightEnemy.MissleWidth, 720 / 2)]
+        [TestCase(1280 / 2, 720 / 2 + LightEnemy.MissleHeight)]
+        [TestCase(1280 / 2 + LightEnemy.MissleWidth, 720 / 2 + LightEnemy.MissleHeight)]
         public void TestDead(int x, int y)
         {
             var missle = new List<IMissle>
             {
-                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, 1280,x, y),
-                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, 1280,x, y)
+                new EnemyMissle(new Bitmap(LightEnemy.MissleWidth, LightEnemy.MissleHeight), Direction.None, 5,LightEnemy.MissleWidth, LightEnemy.MissleHeight, 720, 1280,x, y),
+                new EnemyMissle(new Bitmap(LightEnemy.MissleWidth, LightEnemy.MissleHeight), Direction.None, 5,LightEnemy.MissleWidth, LightEnemy.MissleHeight, 720, 1280,x, y)
             };
             var form = new Form
             {
@@ -189,8 +189,9 @@ namespace UlearnGameTests
         {
             var missle = new List<IMissle>
             {
-                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, 1280,x, y),
-                new EnemyMissle(new Bitmap(EnemyMissle.Width, EnemyMissle.Height), Direction.None, 5, 720, 1280,x, y)
+                new EnemyMissle(new Bitmap(LightEnemy.MissleWidth, LightEnemy.MissleHeight), Direction.None, 5,LightEnemy.MissleWidth, LightEnemy.MissleHeight, 720, 1280,x, y),
+                new EnemyMissle(new Bitmap(LightEnemy.MissleWidth, LightEnemy.MissleHeight), Direction.None, 5,LightEnemy.MissleWidth, LightEnemy.MissleHeight, 720, 1280,x, y)
+
             };
             var form = new Form
             {

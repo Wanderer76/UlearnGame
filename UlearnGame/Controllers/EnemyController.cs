@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using UlearnGame.Interfaces;
@@ -11,9 +12,9 @@ namespace UlearnGame.Controllers
         public bool IsEnd { get; private set; } = false;
 
         private int currentWave = 1;
-        private int MissleCount = 1;
         private int spawnEnemiesCount = 0;
 
+        private int MissleCount = 1;
         private int damage = 15;
         private int speed = 1;
         private int missleSpeed = 2;
@@ -39,15 +40,30 @@ namespace UlearnGame.Controllers
             };
             spawnTimer.Tick += (sender, args) =>
             {
-                if (spawnEnemiesCount < Enemies.Capacity && Enemies.Count < 15)
-                {
-                    Enemies.Add(new LightEnemy(form, MissleCount, missleSpeed, shootInterval, damage, speed));
-                    spawnEnemiesCount++;
-                }
-                else if (DeadCount == CountOfEnemies)
-                    StopSpawn();
+                SpawnEnemies(form);
             };
         }
+
+        private void SpawnEnemies(Form form)
+        {
+            if (spawnEnemiesCount < Enemies.Capacity && Enemies.Count < 15)
+            {
+                var random = new Random();
+                if (currentWave < 3)
+                    Enemies.Add(new LightEnemy(form, MissleCount, missleSpeed, shootInterval, damage, speed));
+                else
+                {
+                    if (random.Next(20) < 10)
+                        Enemies.Add(new LightEnemy(form, MissleCount, missleSpeed, shootInterval, damage, speed));
+                    else
+                        Enemies.Add(new ArmoredEnemy(form, MissleCount));
+                }
+                spawnEnemiesCount++;
+            }
+            else if (DeadCount == CountOfEnemies)
+                StopSpawn();
+        }
+
         public void StartSpawn()
         {
             IsEnd = false;
@@ -72,9 +88,7 @@ namespace UlearnGame.Controllers
                         continue;
 
                     if (Enemies[i].GetPosition().Distance(Enemies[j].GetPosition()) < 120)
-                    {
                         Enemies[i].MoveFromPoint(Enemies[j].GetPosition());
-                    }
                 }
                 Enemies[i].MoveToPoint(mainPlayer.GetPosition());
             }

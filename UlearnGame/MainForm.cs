@@ -125,22 +125,21 @@ namespace UlearnGame
             }
         }
 
-        //TODO Новый способ
         private void Movement(Player player)
         {
-            if (Keyboard.IsKeyDown(Key.W))
+            if (Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Up))
             {
                 player.MoveToTop();
             }
-            else if (Keyboard.IsKeyDown(Key.S))
+            if (Keyboard.IsKeyDown(Key.S) || Keyboard.IsKeyDown(Key.Down))
             {
                 player.MoveToDown();
             }
-            if (Keyboard.IsKeyDown(Key.D))
+            if (Keyboard.IsKeyDown(Key.D) || Keyboard.IsKeyDown(Key.Right))
             {
                 player.MoveToRight();
             }
-            else if (Keyboard.IsKeyDown(Key.A))
+            if (Keyboard.IsKeyDown(Key.A) || Keyboard.IsKeyDown(Key.Left))
             {
                 player.MoveToLeft();
             }

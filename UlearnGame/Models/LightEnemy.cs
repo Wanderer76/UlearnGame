@@ -10,6 +10,8 @@ namespace UlearnGame.Models
 {
     public class LightEnemy : IEnemy
     {
+        public const int MissleWidth = 20;
+        public const int MissleHeight = 25;
         public const int LightEnemySize = 50;
         public int Speed { get; set; }
         public int Damage { get; set; }
@@ -30,7 +32,6 @@ namespace UlearnGame.Models
             {
                 Size = new Size(LightEnemySize + 20, LightEnemySize + 20),
                 Image = new Bitmap(Properties.Resources.spaceShips_004, LightEnemySize, LightEnemySize),
-                BackColor = Color.Red
             };
 
             MissleSpeed = missleSpeed;
@@ -54,6 +55,8 @@ namespace UlearnGame.Models
                         Properties.Resources.spaceMissiles_015,
                         Direction.None,
                         missleSpeed,
+                        MissleWidth,
+                        MissleHeight,
                         activeForm.ClientSize.Height,
                         activeForm.ClientSize.Width,
                         -2000,
@@ -87,7 +90,7 @@ namespace UlearnGame.Models
                     missle.Direction = position.Direction;
                     missle.Damage = Damage;
                     missle.MissleSpeed = MissleSpeed;
-                    missle.SetPosition(position.X + EnemyMissle.Width, position.Y);
+                    missle.SetPosition(position.X + MissleWidth, position.Y);
                     missle.StartMissle();
                     canShoot = false;
                     shootTimer.Start();

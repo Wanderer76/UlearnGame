@@ -9,11 +9,15 @@ namespace UlearnGame.Utilities
         public int Y { get; set; }
         public Direction Direction { get; set; }
 
-        public Vector(int x, int y)
+        public Vector(int x, int y, Direction direction)
         {
             X = x;
             Y = y;
-            Direction = Direction.None;
+            Direction = direction;
+        }
+        public Vector(int x, int y)
+        : this(x, y, Direction.None)
+        {
         }
 
         public void SetPosition(Vector vec)
@@ -26,8 +30,6 @@ namespace UlearnGame.Utilities
             X = point.X;
             Y = point.Y;
         }
-
-        
 
         public static bool operator ==(Vector vec1, Vector vec2)
         {
@@ -42,6 +44,7 @@ namespace UlearnGame.Utilities
         public int Length => (int)Math.Sqrt(X * X + Y * Y);
         public Point ToPoint() => new Point(X, Y);
         public int Distance(Vector other) => (int)Math.Sqrt((other.X - X) * (other.X - X) + (other.Y - Y) * (other.Y - Y));
-        public override bool Equals(object obj) => obj is Vector vector && X == vector.X && Y == vector.Y;
+        public override bool Equals(object obj) => obj is Vector vector && X == vector.X && Y == vector.Y && Direction == vector.Direction;
+    
     }
 }

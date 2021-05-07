@@ -30,6 +30,7 @@ namespace UlearnGame.Models
 
         private readonly Timer shootTimer;
         private bool canShoot = false;
+        private int shootInterval = 500;
 
         private readonly Form activeForm;
 
@@ -71,7 +72,7 @@ namespace UlearnGame.Models
 
             shootTimer = new Timer
             {
-                Interval = 250
+                Interval = shootInterval
             };
 
             shootTimer.Tick += (sender, args) =>
