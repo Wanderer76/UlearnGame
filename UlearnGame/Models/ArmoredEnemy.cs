@@ -84,7 +84,7 @@ namespace UlearnGame.Models
         }
 
         public void DamageToHealth(int damage) => throw new NotImplementedException();
-        public bool DeadInConflict(IEnumerable<IMissle> missle)
+        public bool OnMissleConflict(IEnumerable<IMissle> missle)
         {
             foreach (var i in missle)
             {

@@ -16,7 +16,7 @@ namespace UlearnGame.Interfaces
         public PictureBox GetSource();
         public void SetSource(PictureBox box);
         public IEnumerable<IMissle> GetMissles();
-        public bool DeadInConflict(IEnumerable<IMissle> missle);
+        public bool OnMissleConflict(IEnumerable<IMissle> missle);
         public int GetHealth();
         public void Shoot();
         public void MoveToPoint(Vector position);

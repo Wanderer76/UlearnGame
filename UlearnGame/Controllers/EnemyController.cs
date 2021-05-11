@@ -21,7 +21,6 @@ namespace UlearnGame.Controllers
         private int shootInterval = 1000;
 
         private int spawnDelay = 1200;
-
         private readonly Timer spawnTimer;
 
         public int CountOfEnemies { get; private set; }
@@ -80,7 +79,7 @@ namespace UlearnGame.Controllers
 
         public void MoveEnemies(Player mainPlayer)
         {
-            for (int i = 0; i < Enemies.Count; i++)
+            for (var i = 0; i < Enemies.Count; i++)
             {
                 for (var j = 0; j < Enemies.Count; j++)
                 {
@@ -96,9 +95,9 @@ namespace UlearnGame.Controllers
 
         public void CheckForHit(Player mainPlayer)
         {
-            for (int i = 0; i < Enemies.Count; i++)
+            for (var i = 0; i < Enemies.Count; i++)
             {
-                if (Enemies[i].DeadInConflict(mainPlayer.MisslePool))
+                if (Enemies[i].OnMissleConflict(mainPlayer.MisslePool))
                 {
                     var img = Enemies[i].GetSource();
                     img.BackColor = Color.Red;

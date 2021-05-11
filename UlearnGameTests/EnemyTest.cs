@@ -56,7 +56,7 @@ namespace UlearnGameTests
             for (var i = 0; i < 2; i++)
                 missles.Add(new PlayerMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Top, 5, 480, 640, enemyPosition.X, enemyPosition.Y));
             
-            Assert.IsTrue(enemy.DeadInConflict(missles));
+            Assert.IsTrue(enemy.OnMissleConflict(missles));
         }   
 
         [Test]
@@ -71,7 +71,7 @@ namespace UlearnGameTests
             for (var i = 0; i < 2; i++)
                 missles.Add(new PlayerMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Top, 5, 480, 640, enemyPosition.X + 100, enemyPosition.Y+100));
             
-            Assert.IsFalse(enemy.DeadInConflict(missles));
+            Assert.IsFalse(enemy.OnMissleConflict(missles));
         }
 
     }

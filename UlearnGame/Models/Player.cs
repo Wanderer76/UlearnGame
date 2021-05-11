@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using UlearnGame.Interfaces;
+using UlearnGame.Models.Bonuses;
 using UlearnGame.Utilities;
 
 namespace UlearnGame.Models
@@ -50,7 +51,6 @@ namespace UlearnGame.Models
 
             PlayerImage = new PictureBox
             {
-                //Size = new Size(ShipSize, ShipSize),
                 Image = new Bitmap(Properties.Resources.spaceShips_001, ShipSize, ShipSize),
                 BackColor = Color.Transparent,
             };
@@ -84,34 +84,6 @@ namespace UlearnGame.Models
         }
 
         public Vector GetPosition() => position;
-
-        public void MakeMove()
-        {
-            if (IsUp && position.Y > 0)
-            {
-                position.Direction = Direction.Top;
-                PlayerImage.Image = PlayerRotations[Direction.Top];
-                position.Y -= Speed;
-            }
-            if (IsDown && position.Y + PlayerImage.Height < activeForm.ClientSize.Height)
-            {
-                //position.Direction = Direction.Down;
-                //PlayerImage.Image = PlayerRotations[Direction.Down];
-                position.Y += Speed;
-            }
-            if (IsRight && position.X + PlayerImage.Width < activeForm.ClientSize.Width)
-            {
-                //position.Direction = Direction.Right;
-                //PlayerImage.Image = PlayerRotations[Direction.Right];
-                position.X += Speed;
-            }
-            if (IsLeft && position.X > 0)
-            {
-                //position.Direction = Direction.Left;
-                //PlayerImage.Image = PlayerRotations[Direction.Left];
-                position.X -= Speed;
-            }
-        }
 
         public void MoveToRight()
         {
@@ -155,7 +127,7 @@ namespace UlearnGame.Models
             }
         }
 
-        public bool DeadInConflict(IEnumerable<IMissle> missle)
+        public bool OnMissleConflict(IEnumerable<IMissle> missle)
         {
             foreach (var i in missle)
             {
@@ -175,6 +147,19 @@ namespace UlearnGame.Models
                         return true;
 
                     }
+                }
+            }
+            return false;
+        }
+
+        public bool OnBonusConflict(IBonus bonus)
+        {
+            if (bonus is HealthBonus)
+            {
+                if (bonus.GetPosition().Distance(position) < ShipSize)
+                {
+                    Health += bonus.GetBonus();
+                    return true;
                 }
             }
             return false;

@@ -26,7 +26,7 @@ namespace UlearnGame.Models
         private bool canShoot = false;
         private readonly Form activeForm;
 
-        public LightEnemy(Form form, int missleCount, int missleSpeed = 2, int shootInterval = 1000 ,int damage = 15, int speed = 1)
+        public LightEnemy(Form form, int missleCount, int missleSpeed = 2, int shootInterval = 1000, int damage = 15, int speed = 1)
         {
             Enemy = new PictureBox
             {
@@ -147,7 +147,7 @@ namespace UlearnGame.Models
                 this.position.Direction = Direction.Right;
                 this.position.X += Speed;
             }
-            if (position.Y >= this.position.Y || this.position.Y> activeForm.ClientSize.Height/2)
+            if (position.Y >= this.position.Y || this.position.Y > activeForm.ClientSize.Height / 2)
             {
                 this.position.Direction = Direction.Top;
                 this.position.Y -= Speed;
@@ -159,7 +159,7 @@ namespace UlearnGame.Models
             }
         }
 
-        public bool DeadInConflict(IEnumerable<IMissle> missle)
+        public bool OnMissleConflict(IEnumerable<IMissle> missle)
         {
             foreach (var i in missle)
             {
@@ -177,12 +177,9 @@ namespace UlearnGame.Models
         }
 
         public PictureBox GetSource() => Enemy;
-
         public int GetHealth() => health;
         public IEnumerable<IMissle> GetMissles() => Missles;
-
         public void DamageToHealth(int damage) => health -= damage;
-
         public void SetSource(PictureBox box) => Enemy = box;
     }
 }

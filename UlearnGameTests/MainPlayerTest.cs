@@ -177,7 +177,7 @@ namespace UlearnGameTests
                 ClientSize = new Size(1280, 720)
             };
             var player = new Player(form);
-            Assert.IsTrue(player.DeadInConflict(missle));
+            Assert.IsTrue(player.OnMissleConflict(missle));
 
         }
 
@@ -198,7 +198,7 @@ namespace UlearnGameTests
                 ClientSize = new Size(1280, 720)
             };
             var player = new Player(form);
-            Assert.IsFalse(player.DeadInConflict(missle));
+            Assert.IsFalse(player.OnMissleConflict(missle));
 
         }
     }

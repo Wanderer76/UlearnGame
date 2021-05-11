@@ -6,6 +6,9 @@ using UlearnGame.Utilities;
 using UlearnGame.Controllers;
 using System.Linq;
 using System.Windows.Input;
+using System.Collections.Generic;
+using UlearnGame.Interfaces;
+using UlearnGame.Models.Bonuses;
 
 namespace UlearnGame
 {
@@ -16,7 +19,7 @@ namespace UlearnGame
         private EnemyController enemyController;
         private UIController uIController;
         private WaveController waveController;
-
+        private List<IBonus> bonuses;
         private bool IsDead = false;
 
         private const int EnemyCount = 15;
@@ -41,11 +44,16 @@ namespace UlearnGame
 
         private void OnTimerEvent()
         {
-            mainPlayer.MakeMove();
             Movement(mainPlayer);
             enemyController.MoveEnemies(mainPlayer);
             enemyController.CheckForHit(mainPlayer);
 
+            foreach (var bonus in bonuses)
+            {
+               
+                    bonus.StartMotion();
+                
+            }
 
             for (int i = 0; i < enemyController.Enemies.Count; i++)
             {
@@ -59,7 +67,7 @@ namespace UlearnGame
             foreach (var enemy in enemyController.Enemies)
             {
                 var enemyMissles = enemy.GetMissles();
-                if (mainPlayer.DeadInConflict(enemyMissles) && mainPlayer.Health < 0)
+                if (mainPlayer.OnMissleConflict(enemyMissles) && mainPlayer.Health < 0)
                 {
                     IsDead = true;
                     updateTimer.Stop();
@@ -84,6 +92,12 @@ namespace UlearnGame
             enemyController = new EnemyController(EnemyCount, this);
             waveController = new WaveController(enemyController);
             uIController = new UIController(this, waveController, enemyController, mainPlayer);
+            bonuses = new List<IBonus>(3)
+            {
+                new HealthBonus(new Vector(400, -50), this, 25),
+                new HealthBonus(new Vector(400, -50), this, 25),
+                new HealthBonus(new Vector(400, -50), this, 25)
+            };
 
             waveController.StartWaves();
 
@@ -100,13 +114,20 @@ namespace UlearnGame
             graph.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.GetPosition().ToPoint());
 
             foreach (var enemy in enemyController.Enemies)
+            {
                 graph.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
+            }
 
             var playerMissleImage = mainPlayer.MisslePool[0].MissleImage.Image;
 
             foreach (var point in mainPlayer.MisslePool.Where(missle => missle.Direction != Direction.None).Select(m => m.GetPosition().ToPoint()))
             {
                 graph.DrawImage(playerMissleImage, point);
+            }
+
+            foreach (var bonus in bonuses.Where(bonus => bonus.GetPosition().Direction != Direction.None))
+            {
+                graph.DrawImage(bonus.GetImage(), bonus.GetPosition().ToPoint());
             }
 
             DrawEnemyMissles(graph);
@@ -147,11 +168,6 @@ namespace UlearnGame
             {
                 player.Shoot();
             }
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
         }
     }
 }
