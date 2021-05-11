@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Collections.Generic;
 using UlearnGame.Interfaces;
 using UlearnGame.Models.Bonuses;
+using System.Diagnostics;
 
 namespace UlearnGame
 {
@@ -48,11 +49,16 @@ namespace UlearnGame
             enemyController.MoveEnemies(mainPlayer);
             enemyController.CheckForHit(mainPlayer);
 
-            foreach (var bonus in bonuses)
+            for (int i = 0; i < bonuses.Count; i++)
             {
-               
-                    bonus.StartMotion();
-                
+                var bonus = bonuses[i];
+                bonus.StartMotion();
+                bonus.OnConflict(mainPlayer);
+                //if (bonus.OnConflict(mainPlayer))
+                //{
+                //    bonuses.RemoveAt(i);
+                //    i--;
+                //}
             }
 
             for (int i = 0; i < enemyController.Enemies.Count; i++)
@@ -94,9 +100,9 @@ namespace UlearnGame
             uIController = new UIController(this, waveController, enemyController, mainPlayer);
             bonuses = new List<IBonus>(3)
             {
-                new HealthBonus(new Vector(400, -50), this, 25),
-                new HealthBonus(new Vector(400, -50), this, 25),
-                new HealthBonus(new Vector(400, -50), this, 25)
+                new HealthBonus( this, 25),
+                new HealthBonus( this, 25),
+                new HealthBonus( this, 25)
             };
 
             waveController.StartWaves();
@@ -113,6 +119,10 @@ namespace UlearnGame
 
             graph.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.GetPosition().ToPoint());
 
+            foreach (var bonus in bonuses.Where(bonus => bonus.GetPosition().Direction != Direction.None))
+            {
+                graph.DrawImage(bonus.GetImage(), bonus.GetPosition().ToPoint());
+            }
             foreach (var enemy in enemyController.Enemies)
             {
                 graph.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
@@ -125,10 +135,6 @@ namespace UlearnGame
                 graph.DrawImage(playerMissleImage, point);
             }
 
-            foreach (var bonus in bonuses.Where(bonus => bonus.GetPosition().Direction != Direction.None))
-            {
-                graph.DrawImage(bonus.GetImage(), bonus.GetPosition().ToPoint());
-            }
 
             DrawEnemyMissles(graph);
             uIController.Update();

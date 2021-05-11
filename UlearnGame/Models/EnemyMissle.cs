@@ -22,7 +22,7 @@ namespace UlearnGame.Models
         private readonly Timer movingTimer;
         private readonly Dictionary<Direction, Image> images;
 
-        public EnemyMissle(Image image, Direction direction, int missleSpeed,int width ,int height,int maxHeight, int maxWidth, int x, int y)
+        public EnemyMissle(Image image, Direction direction, int missleSpeed, int width, int height, int maxHeight, int maxWidth, int x, int y)
         {
             MissleSpeed = missleSpeed;
 
