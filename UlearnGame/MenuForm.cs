@@ -15,6 +15,8 @@ namespace UlearnGame
         public MenuForm()
         {
             InitializeComponent();
+            MinimumSize = new Size(720, 720);
+            MaximumSize = new Size(720, 720);
         }
 
         private void playButton_Click(object sender, EventArgs e)

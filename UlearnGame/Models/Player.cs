@@ -31,7 +31,7 @@ namespace UlearnGame.Models
 
         private readonly Timer shootTimer;
         private bool canShoot = false;
-        private int shootInterval = 500;
+        private int shootInterval = 600;
 
         private readonly Form activeForm;
 
@@ -133,7 +133,7 @@ namespace UlearnGame.Models
             {
                 if (i is EnemyMissle)
                 {
-                    if (i.GetPosition().Distance(position) < ShipSize)
+                    if (i.GetPosition().Distance(position) < ShipSize - 20)
                     {
                         i.StopMissle();
                         if (Armor <= 0)
@@ -147,19 +147,6 @@ namespace UlearnGame.Models
                         return true;
 
                     }
-                }
-            }
-            return false;
-        }
-
-        public bool OnBonusConflict(IBonus bonus)
-        {
-            if (bonus is HealthBonus)
-            {
-                if (bonus.GetPosition().Distance(position) < ShipSize)
-                {
-                    Health += bonus.GetBonus();
-                    return true;
                 }
             }
             return false;

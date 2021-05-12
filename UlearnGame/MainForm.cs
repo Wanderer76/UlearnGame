@@ -9,7 +9,6 @@ using System.Windows.Input;
 using System.Collections.Generic;
 using UlearnGame.Interfaces;
 using UlearnGame.Models.Bonuses;
-using System.Diagnostics;
 
 namespace UlearnGame
 {
@@ -25,6 +24,8 @@ namespace UlearnGame
         private bool IsDead = false;
 
         private const int EnemyCount = 15;
+        private const double healthSpawnProbability = 0.00001;
+        private const double armorSpawnProbability = 0.0005;
 
         public MainForm()
         {
@@ -41,7 +42,7 @@ namespace UlearnGame
             {
                 OnTimerEvent();
             };
-            updateTimer.Start();
+            //updateTimer.Start();
 
             FormClosed += (sender, args) =>
             {
@@ -59,6 +60,10 @@ namespace UlearnGame
                     ControlLearnedPanel.Visible = false;
                     ControlLearnedPanel.Dispose();
                     waveController.StartWaves();
+                    updateTimer.Start();
+                    timer.Stop();
+                    timer.Dispose();
+
                 };
                 timer.Start();
             };
@@ -70,17 +75,21 @@ namespace UlearnGame
             Movement(mainPlayer);
             enemyController.MoveEnemies(mainPlayer);
             enemyController.CheckForHit(mainPlayer);
-
+            RandomBonusGenerate();
             for (int i = 0; i < bonuses.Count; i++)
             {
-                var bonus = bonuses[i];
-                bonus.StartMotion();
-                bonus.OnConflict(mainPlayer);
-                //if (bonus.OnConflict(mainPlayer))
-                //{
-                //    bonuses.RemoveAt(i);
-                //    i--;
-                //}
+                bonuses[i].StartMotion();
+                bonuses[i].OnConflict(mainPlayer);
+                if (bonuses[i].OnConflict(mainPlayer))
+                {
+                    bonuses.RemoveAt(i);
+                    i--;
+                }
+                else if(bonuses[i].GetPosition().Y > ClientSize.Height)
+                {
+                    bonuses.RemoveAt(i);
+                    i--;
+                }
             }
 
             for (int i = 0; i < enemyController.Enemies.Count; i++)
@@ -120,17 +129,10 @@ namespace UlearnGame
             enemyController = new EnemyController(EnemyCount, this);
             waveController = new WaveController(enemyController);
             uIController = new UIController(this, waveController, enemyController, mainPlayer);
+            bonuses = new List<IBonus>(3);
             MinimumSize = new Size(720, 720);
             MaximumSize = new Size(720, 720);
 
-            bonuses = new List<IBonus>(3)
-            {
-               // new HealthBonus( this, 25),
-               // new HealthBonus( this, 25),
-               // new HealthBonus( this, 25)
-            };
-
-            //waveController.StartWaves();
 
             Paint += (sender, args) =>
             {
@@ -201,9 +203,15 @@ namespace UlearnGame
             }
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void RandomBonusGenerate()
         {
-
+            var random = new Random();
+            if (random.NextDouble() < healthSpawnProbability)
+            {
+                if (bonuses.Count != bonuses.Capacity)
+                    bonuses.Add(new HealthBonus(this, 25));
+            }
         }
+
     }
 }
