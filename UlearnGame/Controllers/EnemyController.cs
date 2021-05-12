@@ -11,7 +11,7 @@ namespace UlearnGame.Controllers
     {
         public bool IsEnd { get; private set; } = false;
 
-        private int currentWave = 1;
+        private int currentWave = 0;
         private int spawnEnemiesCount = 0;
 
         private int MissleCount = 1;

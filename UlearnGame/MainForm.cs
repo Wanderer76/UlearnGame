@@ -15,6 +15,7 @@ namespace UlearnGame
 {
     public partial class MainForm : Form
     {
+
         private Player mainPlayer;
         private readonly Timer updateTimer;
         private EnemyController enemyController;
@@ -29,6 +30,7 @@ namespace UlearnGame
         {
             DoubleBuffered = true;
             InitializeComponent();
+            ControlLearnedPanel.Visible = true;
             Init();
             updateTimer = new Timer
             {
@@ -40,6 +42,26 @@ namespace UlearnGame
                 OnTimerEvent();
             };
             updateTimer.Start();
+
+            FormClosed += (sender, args) =>
+            {
+                Application.Exit();
+            };
+
+            Activated += (sender, args) =>
+            {
+                var timer = new Timer
+                {
+                    Interval = 5000
+                };
+                timer.Tick += (sender, args) =>
+                {
+                    ControlLearnedPanel.Visible = false;
+                    ControlLearnedPanel.Dispose();
+                    waveController.StartWaves();
+                };
+                timer.Start();
+            };
 
         }
 
@@ -98,14 +120,17 @@ namespace UlearnGame
             enemyController = new EnemyController(EnemyCount, this);
             waveController = new WaveController(enemyController);
             uIController = new UIController(this, waveController, enemyController, mainPlayer);
+            MinimumSize = new Size(720, 720);
+            MaximumSize = new Size(720, 720);
+
             bonuses = new List<IBonus>(3)
             {
-                new HealthBonus( this, 25),
-                new HealthBonus( this, 25),
-                new HealthBonus( this, 25)
+               // new HealthBonus( this, 25),
+               // new HealthBonus( this, 25),
+               // new HealthBonus( this, 25)
             };
 
-            waveController.StartWaves();
+            //waveController.StartWaves();
 
             Paint += (sender, args) =>
             {
@@ -174,6 +199,11 @@ namespace UlearnGame
             {
                 player.Shoot();
             }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
