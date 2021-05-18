@@ -15,6 +15,7 @@ namespace UlearnGame
     public partial class MainForm : Form
     {
 
+        // класс формы контролирует все, такой код будет сложно тестировать.
         private Player mainPlayer;
         private readonly Timer updateTimer;
         private EnemyController enemyController;
@@ -120,7 +121,10 @@ namespace UlearnGame
             if (!IsDead)
                 Invalidate();
             else
+            {
+                // после этого таймер продолжает работу
                 MessageBox.Show("Потрачено");
+            }
         }
 
         private void Init()
@@ -179,6 +183,8 @@ namespace UlearnGame
             }
         }
 
+
+        // Получается игрок сам собой не управляет, если все делать в этой Form - она станет очень большой.
         private void Movement(Player player)
         {
             if (Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Up))

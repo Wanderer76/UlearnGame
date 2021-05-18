@@ -4,6 +4,8 @@ using UlearnGame.Models;
 
 namespace UlearnGame.Controllers
 {
+    // Эта штука больше похожа на View а не на контроллер, т.к. контроллер передает запросы от пользователя к модели
+    // а этот класс определяет отображение характеристик
     public class UIController
     {
         private readonly Player player;

@@ -70,6 +70,9 @@ namespace UlearnGame.Models
             for (var i = 0; i < MisslePool.Capacity; i++)
                 MisslePool.Add(new PlayerMissle(missleSource, Direction.None, MissleSpeed, activeForm.ClientSize.Height, activeForm.ClientSize.Width, -2000, -2000));
 
+
+            // Отдельный таймер у игрока может рассогласоваться с другими таймерами в системе. Это приводит к недетерминированности игры.
+            // Хорошо бы использовать один таймер для всей игры
             shootTimer = new Timer
             {
                 Interval = shootInterval
