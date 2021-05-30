@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 using UlearnGame.Interfaces;
 using UlearnGame.Models;
@@ -122,11 +121,11 @@ namespace UlearnGame.Controllers
             CountOfEnemies += 5;
             Enemies.Capacity = CountOfEnemies;
             currentWave++;
-            MissleCount = MissleCount + 1 > 6 ? 6 : MissleCount++;
+            MissleCount = MissleCount + 1 > 10 ? 10 : MissleCount++;
             shootInterval = shootInterval <= 500 ? 500 : shootInterval - 50;
             if (currentWave % 2 == 0)
             {
-                damage = damage + 1 > 30 ? 30 : damage++;
+                damage = damage + 1 > 30 ? 30 : damage + 2;
                 speed = speed + 1 > 5 ? 5 : speed++;
                 missleSpeed = missleSpeed + 1 > 9 ? 9 : missleSpeed++;
             }

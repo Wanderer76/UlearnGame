@@ -6,8 +6,6 @@ using UlearnGame.Utilities;
 using UlearnGame.Controllers;
 using System.Linq;
 using System.Windows.Input;
-using System.Collections.Generic;
-using UlearnGame.Interfaces;
 
 namespace UlearnGame
 {
@@ -18,7 +16,7 @@ namespace UlearnGame
         private Player mainPlayer;
         private readonly Timer updateTimer;
         private EnemyController enemyController;
-        private UiView uIController;
+        private UiView uiView;
         private WaveController waveController;
         private bool IsDead = false;
 
@@ -28,7 +26,6 @@ namespace UlearnGame
         {
             DoubleBuffered = true;
             InitializeComponent();
-            ControlLearnedPanel.Visible = true;
             Init();
             updateTimer = new Timer
             {
@@ -47,35 +44,21 @@ namespace UlearnGame
 
             Activated += (sender, args) =>
             {
-                var timer = new Timer
-                {
-                    Interval = 1
-                };
-                timer.Tick += (sender, args) =>
-                {
-                    ControlLearnedPanel.Visible = false;
-                    ControlLearnedPanel.Dispose();
-                    waveController.StartWaves();
-                    updateTimer.Start();
-                    timer.Stop();
-                    timer.Dispose();
-
-                };
-                timer.Start();
+                updateTimer.Start();
+                waveController.StartWaves();
             };
-
         }
 
         private void OnTimerEvent()
         {
             mainPlayer.CurentShootDelay += updateTimer.Interval;
-            
+
             enemyController.MoveEnemies(mainPlayer);
             enemyController.CheckForHit(mainPlayer);
             Movement(mainPlayer);
 
 
-            foreach(var missle in mainPlayer.MisslePool.Where(m=>m.IsActive))
+            foreach (var missle in mainPlayer.MisslePool.Where(m => m.IsActive))
             {
                 missle.Move();
             }
@@ -95,7 +78,7 @@ namespace UlearnGame
                 enemy.CurrentShootDelay += updateTimer.Interval;
 
                 var enemyMissles = enemy.GetMissles();
-                foreach(var missle in enemyMissles.Where(m=>m.IsActive))
+                foreach (var missle in enemyMissles.Where(m => m.IsActive))
                 {
                     missle.Move();
                 }
@@ -107,8 +90,17 @@ namespace UlearnGame
 
             if (waveController.IsWaveEnd())
             {
-                uIController.Wave = waveController.Wave;
+                uiView.Wave = waveController.Wave;
                 enemyController.IncreaseWave();
+            }
+
+            if (enemyController.IsEnd)
+            {
+                uiView.ShowUpgradePanel();
+            }
+            else
+            {
+                uiView.HideUpgradePanel();
             }
 
             if (IsDead)
@@ -125,9 +117,34 @@ namespace UlearnGame
             mainPlayer = new Player(this);
             enemyController = new EnemyController(EnemyCount, this);
             waveController = new WaveController(enemyController);
-            uIController = new UiView(this, waveController, enemyController, mainPlayer);
+            uiView = new UiView(this, waveController, enemyController, mainPlayer);
             MinimumSize = new Size(720, 720);
             MaximumSize = new Size(720, 720);
+
+
+            upgradeDamageButton.Click += (sender, args) =>
+            {
+                if (mainPlayer.UpgradeDamage(scores))
+                    scores -= UpgradePrices.DamageUpgrade;
+            };
+
+            upgradeSpeedButton.Click += (sender, args) =>
+            {
+                if (mainPlayer.UpgradeMissleSpeed(scores))
+                    scores -= UpgradePrices.MissleUpgrade;
+
+            };
+
+            fillArmorButton.Click += (sender, args) =>
+            {
+                if (mainPlayer.FillArmor(scores))
+                    scores -= UpgradePrices.ArmorFill;
+            };
+            fillHealthButton.Click += (sender, args) =>
+            {
+                if (mainPlayer.FillHealth(scores))
+                    scores -= UpgradePrices.HealthFill;
+            };
 
 
             Paint += (sender, args) =>
@@ -156,7 +173,7 @@ namespace UlearnGame
 
 
             DrawEnemyMissles(graph);
-            uIController.Update();
+            uiView.Update();
         }
 
         private void DrawEnemyMissles(Graphics graph)

@@ -29,59 +29,84 @@ namespace UlearnGame
         /// </summary>
         private void InitializeComponent()
         {
-            this.ControlLearnedPanel = new System.Windows.Forms.Panel();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.ControlLearnedPanel.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.upgradePanel = new System.Windows.Forms.TableLayoutPanel();
+            this.upgradeDamageButton = new System.Windows.Forms.Button();
+            this.upgradeSpeedButton = new System.Windows.Forms.Button();
+            this.fillHealthButton = new System.Windows.Forms.Button();
+            this.fillArmorButton = new System.Windows.Forms.Button();
+            this.upgradePanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // ControlLearnedPanel
+            // upgradePanel
             // 
-            this.ControlLearnedPanel.BackColor = System.Drawing.Color.Ivory;
-            this.ControlLearnedPanel.Controls.Add(this.tableLayoutPanel1);
-            this.ControlLearnedPanel.Location = new System.Drawing.Point(35, 59);
-            this.ControlLearnedPanel.Name = "ControlLearnedPanel";
-            this.ControlLearnedPanel.Size = new System.Drawing.Size(629, 539);
-            this.ControlLearnedPanel.TabIndex = 0;
-            this.ControlLearnedPanel.Visible = false;
+            this.upgradePanel.AutoSize = true;
+            this.upgradePanel.ColumnCount = 2;
+            this.upgradePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.upgradePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.upgradePanel.Controls.Add(this.upgradeDamageButton, 0, 0);
+            this.upgradePanel.Controls.Add(this.upgradeSpeedButton, 1, 0);
+            this.upgradePanel.Controls.Add(this.fillHealthButton, 0, 1);
+            this.upgradePanel.Controls.Add(this.fillArmorButton, 1, 1);
+            this.upgradePanel.Location = new System.Drawing.Point(69, 108);
+            this.upgradePanel.Name = "upgradePanel";
+            this.upgradePanel.RowCount = 2;
+            this.upgradePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.upgradePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.upgradePanel.Size = new System.Drawing.Size(558, 398);
+            this.upgradePanel.TabIndex = 0;
+            this.upgradePanel.Visible = false;
             // 
-            // tableLayoutPanel1
+            // upgradeDamageButton
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(629, 539);
-            this.tableLayoutPanel1.TabIndex = 1;
+            this.upgradeDamageButton.AutoSize = true;
+            this.upgradeDamageButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.upgradeDamageButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.upgradeDamageButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.upgradeDamageButton.Location = new System.Drawing.Point(3, 3);
+            this.upgradeDamageButton.Name = "upgradeDamageButton";
+            this.upgradeDamageButton.Size = new System.Drawing.Size(273, 193);
+            this.upgradeDamageButton.TabIndex = 0;
+            this.upgradeDamageButton.Text = "Upgrade Damage";
+            this.upgradeDamageButton.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // upgradeSpeedButton
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(278, 37);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Click \"Space\" to shoot";
+            this.upgradeSpeedButton.AutoSize = true;
+            this.upgradeSpeedButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.upgradeSpeedButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.upgradeSpeedButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.upgradeSpeedButton.Location = new System.Drawing.Point(282, 3);
+            this.upgradeSpeedButton.Name = "upgradeSpeedButton";
+            this.upgradeSpeedButton.Size = new System.Drawing.Size(273, 193);
+            this.upgradeSpeedButton.TabIndex = 1;
+            this.upgradeSpeedButton.Text = "Upgrade Missles Speed";
+            this.upgradeSpeedButton.UseVisualStyleBackColor = true;
             // 
-            // label2
+            // fillHealthButton
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(3, 269);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(321, 37);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Click \"W, A, S, D\" to move";
+            this.fillHealthButton.AutoSize = true;
+            this.fillHealthButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.fillHealthButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.fillHealthButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.fillHealthButton.Location = new System.Drawing.Point(3, 202);
+            this.fillHealthButton.Name = "fillHealthButton";
+            this.fillHealthButton.Size = new System.Drawing.Size(273, 193);
+            this.fillHealthButton.TabIndex = 2;
+            this.fillHealthButton.Text = "Fill Health";
+            this.fillHealthButton.UseVisualStyleBackColor = true;
+            // 
+            // fillArmorButton
+            // 
+            this.fillArmorButton.AutoSize = true;
+            this.fillArmorButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.fillArmorButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.fillArmorButton.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.fillArmorButton.Location = new System.Drawing.Point(282, 202);
+            this.fillArmorButton.Name = "fillArmorButton";
+            this.fillArmorButton.Size = new System.Drawing.Size(273, 193);
+            this.fillArmorButton.TabIndex = 3;
+            this.fillArmorButton.Text = "Fill Armor";
+            this.fillArmorButton.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -89,22 +114,22 @@ namespace UlearnGame
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.ClientSize = new System.Drawing.Size(704, 681);
-            this.Controls.Add(this.ControlLearnedPanel);
+            this.Controls.Add(this.upgradePanel);
             this.Name = "MainForm";
             this.Text = "Form1";
-            this.ControlLearnedPanel.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.upgradePanel.ResumeLayout(false);
+            this.upgradePanel.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Panel ControlLearnedPanel;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button upgradeDamageButton;
+        private System.Windows.Forms.Button upgradeSpeedButton;
+        private System.Windows.Forms.Button fillHealthButton;
+        private System.Windows.Forms.Button fillArmorButton;
+        public System.Windows.Forms.TableLayoutPanel upgradePanel;
     }
 }
 

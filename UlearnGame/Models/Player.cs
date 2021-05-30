@@ -168,16 +168,6 @@ namespace UlearnGame.Models
             return false;
         }
 
-        public bool UpgradeSpeed(int score)
-        {
-            if (score >= UpgradePrices.SpeedUpgrade)
-            {
-                Speed++;
-                return true;
-            }
-            return false;
-        }
-
         public bool UpgradeMissleSpeed(int score)
         {
             if (score >= UpgradePrices.MissleUpgrade)
@@ -188,28 +178,22 @@ namespace UlearnGame.Models
             return false;
         }
 
-        public bool UpgradeArmor(int score)
+        public bool FillArmor(int score)
         {
-            if (score >= UpgradePrices.ArmorUpgrade)
+            if (score >= UpgradePrices.ArmorFill)
             {
-                maxArmor += 5;
-
                 if (Armor < maxArmor)
                     Armor = maxArmor;
-
                 return true;
             }
             return false;
         }
-        public bool UpgradeHealth(int score)
+        public bool FillHealth(int score)
         {
-            if (score >= UpgradePrices.HealthUpgrade)
+            if (score >= UpgradePrices.HealthFill)
             {
-                maxHealth += 20;
-
                 if (Health < maxHealth)
                     Health = maxHealth;
-
                 return true;
             }
             return false;

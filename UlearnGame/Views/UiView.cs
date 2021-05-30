@@ -6,6 +6,7 @@ namespace UlearnGame.Controllers
 {
     public class UiView
     {
+        private MainForm mainForm;
         private readonly Player player;
         private readonly EnemyController enemyController;
         private readonly Label healthLabel;
@@ -17,10 +18,11 @@ namespace UlearnGame.Controllers
 
         public int WaveTime { get; set; }
 
-        public UiView(Form form, WaveController waveController, EnemyController enemyController, Player player)
+        public UiView(MainForm mainForm, WaveController waveController, EnemyController enemyController, Player player)
         {
             this.player = player;
             this.enemyController = enemyController;
+            this.mainForm = mainForm;
             Wave = waveController.Wave;
 
             healthLabel = new Label
@@ -54,7 +56,7 @@ namespace UlearnGame.Controllers
 
             var tableLayout = new TableLayoutPanel
             {
-                Size = new Size(form.ClientSize.Width, 50),
+                Size = new Size(mainForm.ClientSize.Width, 50),
             };
             tableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             tableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
@@ -66,7 +68,7 @@ namespace UlearnGame.Controllers
             tableLayout.Controls.Add(scoresLabel, 2, 0);
             tableLayout.Controls.Add(waveLabel, 3, 0);
 
-            form.Controls.Add(tableLayout);
+            mainForm.Controls.Add(tableLayout);
         }
 
         public void Update()
@@ -75,6 +77,16 @@ namespace UlearnGame.Controllers
             armorLabel.Text = $"Armor:{player.Armor}";
             scoresLabel.Text = $"Scores:{MainForm.scores}";
             waveLabel.Text = $"Wave:{Wave} Count of enemies:{enemyController.CountOfEnemies - enemyController.DeadCount}";
+        }
+
+        public void ShowUpgradePanel()
+        {
+            mainForm.upgradePanel.Visible = true;
+
+        }
+        public void HideUpgradePanel()
+        {
+            mainForm.upgradePanel.Visible = false;
         }
 
     }
