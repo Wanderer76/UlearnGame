@@ -74,6 +74,13 @@ namespace UlearnGame
             enemyController.CheckForHit(mainPlayer);
             Movement(mainPlayer);
 
+
+            foreach(var missle in mainPlayer.MisslePool.Where(m=>m.IsActive))
+            {
+                missle.Move();
+            }
+
+
             for (int i = 0; i < enemyController.Enemies.Count; i++)
             {
                 var enemyPosition = enemyController.Enemies[i].GetPosition();
@@ -88,6 +95,10 @@ namespace UlearnGame
                 enemy.CurrentShootDelay += updateTimer.Interval;
 
                 var enemyMissles = enemy.GetMissles();
+                foreach(var missle in enemyMissles.Where(m=>m.IsActive))
+                {
+                    missle.Move();
+                }
                 if (mainPlayer.OnMissleConflict(enemyMissles) && mainPlayer.Health < 0)
                 {
                     IsDead = true;

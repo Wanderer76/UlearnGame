@@ -14,21 +14,19 @@ namespace UlearnGame.Models
     {
         public const int MissleWidth = 30;
         public const int MissleHeight = 50;
+        public const int ArmoredEnemySize = 60;
 
         public int Damage { get; set; }
-
-        public const int ArmoredEnemySize = 60;
+        public int CurrentShootDelay { get; set; } = 0;
         public int Speed { get; set; }
+
         public readonly int MissleSpeed;
         public readonly List<IMissle> Missles;
         private Vector position;
         private int health = 50;
-        private PictureBox Enemy;
+        private readonly PictureBox Enemy;
         private readonly Dictionary<Direction, Image> enemyRotations;
-
-        private int shootInterval;
-        public int CurrentShootDelay { get; set; } = 0;
-     
+        private readonly int shootInterval;
         private readonly Form activeForm;
 
         public ArmoredEnemy(Form form, int missleCount, int missleSpeed = 3, int shootInterval = 1000, int damage = 20, int speed = 1)

@@ -12,19 +12,25 @@ namespace UlearnGame.Models
         public const int Width = 20;
         public const int Height = 25;
 
+        public bool IsActive { get; private set; } = false;
+
         public int Damage { get; set; }
         public int MissleSpeed { get; set; }
+
+        private readonly int maxHeight;
+        private readonly int maxWidth;
+
         public Direction Direction { get => position.Direction; set => position.Direction = value; }
         public PictureBox MissleImage { get; private set; }
 
         private Vector position;
-        private readonly Timer movingTimer;
         private readonly Dictionary<Direction, Image> images;
 
         public PlayerMissle(Image image, Direction direction, int missleSpeed, int maxHeight, int maxWidth, int x, int y)
         {
-            //Direction = direction;
             MissleSpeed = missleSpeed;
+            this.maxHeight = maxHeight;
+            this.maxWidth = maxWidth;
 
             position = new Vector
             {
@@ -45,41 +51,36 @@ namespace UlearnGame.Models
             images.Add(Direction.Right, RotateImage(images[Direction.Top], RotateFlipType.Rotate90FlipNone));
             images.Add(Direction.Down, RotateImage(images[Direction.Right], RotateFlipType.Rotate90FlipNone));
             images.Add(Direction.Left, RotateImage(images[Direction.Down], RotateFlipType.Rotate90FlipNone));
+        }
 
-            movingTimer = new Timer
+        public void Move()
+        {
+            if (position.Direction == Direction.Top)
+                position.Y -= MissleSpeed;
+
+            if (position.Direction == Direction.Left)
+                position.X -= MissleSpeed;
+
+            if (position.Direction == Direction.Right)
+                position.X += MissleSpeed;
+
+            if (position.Direction == Direction.Down)
+                position.Y += MissleSpeed;
+
+            if (position.Y < 0 || position.Y > maxHeight)
             {
-                Interval = MissleSpeed
-            };
-
-            movingTimer.Tick += (sender, args) =>
+                StopMissle();
+            }
+            if (position.X < 0 || position.X > maxWidth)
             {
-                if (position.Direction == Direction.Top)
-                    position.Y -= MissleSpeed;
-
-                if (position.Direction == Direction.Left)
-                    position.X -= MissleSpeed;
-
-                if (position.Direction == Direction.Right)
-                    position.X += MissleSpeed;
-
-                if (position.Direction == Direction.Down)
-                    position.Y += MissleSpeed;
-
-                if (position.Y < 0 || position.Y > maxHeight)
-                {
-                    StopMissle();
-                }
-                if (position.X < 0 || position.X > maxWidth)
-                {
-                    StopMissle();
-                }
-            };
+                StopMissle();
+            }
         }
 
         public void StartMissle()
         {
             MissleImage.Image = images[position.Direction];
-            movingTimer.Start();
+            IsActive = true;
         }
 
         public void SetPosition(int x, int y)
@@ -90,9 +91,13 @@ namespace UlearnGame.Models
 
         public void StopMissle()
         {
-            position = new Vector(-1000, -1000);
-            position.Direction = Direction.None;
-            movingTimer.Stop();
+            IsActive = false;
+            position = new Vector
+            {
+                X = -1000,
+                Y = -1000,
+                Direction = Direction.None
+            };
         }
 
         private static Image RotateImage(Image img, RotateFlipType angle)

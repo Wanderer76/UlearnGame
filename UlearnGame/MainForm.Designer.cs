@@ -30,8 +30,8 @@ namespace UlearnGame
         private void InitializeComponent()
         {
             this.ControlLearnedPanel = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.ControlLearnedPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -46,16 +46,6 @@ namespace UlearnGame
             this.ControlLearnedPanel.Size = new System.Drawing.Size(629, 539);
             this.ControlLearnedPanel.TabIndex = 0;
             this.ControlLearnedPanel.Visible = false;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(278, 37);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Click \"Space\" to shoot";
             // 
             // tableLayoutPanel1
             // 
@@ -73,6 +63,16 @@ namespace UlearnGame
             this.tableLayoutPanel1.Size = new System.Drawing.Size(629, 539);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Location = new System.Drawing.Point(3, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(278, 37);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Click \"Space\" to shoot";
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -87,7 +87,7 @@ namespace UlearnGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.ClientSize = new System.Drawing.Size(704, 681);
             this.Controls.Add(this.ControlLearnedPanel);
             this.Name = "MainForm";
