@@ -25,8 +25,10 @@ namespace UlearnGame.Models
         private int health = 50;
         private PictureBox Enemy;
         private readonly Dictionary<Direction, Image> enemyRotations;
-        private readonly Timer shootTimer;
-        private bool canShoot = false;
+
+        private int shootInterval;
+        public int CurrentShootDelay { get; set; } = 0;
+     
         private readonly Form activeForm;
 
         public ArmoredEnemy(Form form, int missleCount, int missleSpeed = 3, int shootInterval = 1000, int damage = 20, int speed = 1)
@@ -40,6 +42,7 @@ namespace UlearnGame.Models
             MissleSpeed = missleSpeed;
             Damage = damage;
             Speed = speed;
+            this.shootInterval = shootInterval;
 
             enemyRotations = new Dictionary<Direction, Image>
             {
@@ -69,22 +72,9 @@ namespace UlearnGame.Models
 
             var random = new Random();
             position = new Vector(random.Next(-150, activeForm.ClientSize.Width), -50);
-
-            shootTimer = new Timer
-            {
-                Interval = shootInterval
-            };
-
-            shootTimer.Tick += (sender, args) =>
-            {
-                canShoot = true;
-                shootTimer.Stop();
-            };
-            shootTimer.Start();
         }
 
-        public void DamageToHealth(int damage) => throw new NotImplementedException();
-        public bool OnMissleConflict(IEnumerable<IMissle> missle)
+        public bool OnMissleConflict(IEnumerable<PlayerMissle> missle)
         {
             foreach (var i in missle)
             {
@@ -152,15 +142,15 @@ namespace UlearnGame.Models
                 }
                 else if (playerPosition.Y < position.Y)
                 {
-
+                    position.Direction = Direction.Top;
+                    Enemy.Image = enemyRotations[Direction.Top];
                     position.Y -= Speed;
                 }
             }
         }
-        public void SetSource(PictureBox box) => Enemy = box;
         public void Shoot()
         {
-            if (canShoot == true)
+            if (CurrentShootDelay >= shootInterval)
             {
                 var missle = Missles.FirstOrDefault(missl => missl.GetPosition().Direction == Direction.None);
                 if (missle != null)
@@ -170,8 +160,7 @@ namespace UlearnGame.Models
                     missle.MissleSpeed = MissleSpeed;
                     missle.SetPosition(position.X + MissleWidth, position.Y);
                     missle.StartMissle();
-                    canShoot = false;
-                    shootTimer.Start();
+                    CurrentShootDelay = 0;
                 }
             }
         }

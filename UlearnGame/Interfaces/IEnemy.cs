@@ -11,16 +11,17 @@ namespace UlearnGame.Interfaces
     public interface IEnemy
     {
         public int Damage { get; set; }
+
+        public int CurrentShootDelay { get; set; }
+
         public Vector GetPosition();
         public Image GetImage();
         public PictureBox GetSource();
-        public void SetSource(PictureBox box);
         public IEnumerable<IMissle> GetMissles();
-        public bool OnMissleConflict(IEnumerable<IMissle> missle);
+        public bool OnMissleConflict(IEnumerable<PlayerMissle> missle);
         public int GetHealth();
         public void Shoot();
         public void MoveToPoint(Vector position);
         public void MoveFromPoint(Vector position);
-        public void DamageToHealth(int damage);
     }
 }

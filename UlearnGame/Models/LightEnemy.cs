@@ -18,12 +18,14 @@ namespace UlearnGame.Models
         public readonly int MissleSpeed;
         public readonly List<IMissle> Missles;
 
+        private int shootInterval = 1000;
+        public int CurrentShootDelay { get; set; } = 0;
+
         private Vector position;
         private int health = 30;
         private PictureBox Enemy;
         private readonly Dictionary<Direction, Image> enemyRotations;
-        private readonly Timer shootTimer;
-        private bool canShoot = false;
+
         private readonly Form activeForm;
 
         public LightEnemy(Form form, int missleCount, int missleSpeed = 2, int shootInterval = 1000, int damage = 15, int speed = 1)
@@ -37,6 +39,7 @@ namespace UlearnGame.Models
             MissleSpeed = missleSpeed;
             Damage = damage;
             Speed = speed;
+            this.shootInterval = shootInterval;
 
             enemyRotations = new Dictionary<Direction, Image>
             {
@@ -66,23 +69,11 @@ namespace UlearnGame.Models
 
             var random = new Random();
             position = new Vector(random.Next(-150, activeForm.ClientSize.Width), -50);
-
-            shootTimer = new Timer
-            {
-                Interval = shootInterval
-            };
-
-            shootTimer.Tick += (sender, args) =>
-            {
-                canShoot = true;
-                shootTimer.Stop();
-            };
-            shootTimer.Start();
         }
 
         public void Shoot()
         {
-            if (canShoot == true)
+            if (CurrentShootDelay >= shootInterval)
             {
                 var missle = Missles.FirstOrDefault(missl => missl.GetPosition().Direction == Direction.None);
                 if (missle != null)
@@ -92,8 +83,7 @@ namespace UlearnGame.Models
                     missle.MissleSpeed = MissleSpeed;
                     missle.SetPosition(position.X + MissleWidth, position.Y);
                     missle.StartMissle();
-                    canShoot = false;
-                    shootTimer.Start();
+                    CurrentShootDelay = 0;
                 }
             }
         }
@@ -106,14 +96,10 @@ namespace UlearnGame.Models
             {
                 if (playerPosition.X > position.X)
                 {
-                    // Enemy.Image = EnemyRotations[Direction.Right];
-                    // Position.Direction = Direction.Right;
                     position.X += Speed;
                 }
                 else if (playerPosition.X < position.X)
                 {
-                    //Position.Direction = Direction.Left;
-                    //Enemy.Image = EnemyRotations[Direction.Left];
                     position.X -= Speed;
                 }
                 if (playerPosition.Y > position.Y && position.Y < (activeForm.ClientSize.Height / 2))
@@ -124,8 +110,8 @@ namespace UlearnGame.Models
                 }
                 else if (playerPosition.Y < position.Y)
                 {
-                    //position.Direction = Direction.Top;
-                    //Enemy.Image = enemyRotations[Direction.Top];
+                    position.Direction = Direction.Top;
+                    Enemy.Image = enemyRotations[Direction.Top];
                     position.Y -= Speed;
                 }
             }
@@ -159,18 +145,15 @@ namespace UlearnGame.Models
             }
         }
 
-        public bool OnMissleConflict(IEnumerable<IMissle> missle)
+        public bool OnMissleConflict(IEnumerable<PlayerMissle> missle)
         {
             foreach (var i in missle)
             {
-                if (i is PlayerMissle)
+                if (i.GetPosition().Distance(position) < LightEnemySize)
                 {
-                    if (i.GetPosition().Distance(position) < LightEnemySize)
-                    {
-                        i.StopMissle();
-                        health -= i.Damage;
-                        return true;
-                    }
+                    i.StopMissle();
+                    health -= i.Damage;
+                    return true;
                 }
             }
             return false;
@@ -179,7 +162,5 @@ namespace UlearnGame.Models
         public PictureBox GetSource() => Enemy;
         public int GetHealth() => health;
         public IEnumerable<IMissle> GetMissles() => Missles;
-        public void DamageToHealth(int damage) => health -= damage;
-        public void SetSource(PictureBox box) => Enemy = box;
     }
 }

@@ -68,7 +68,8 @@ namespace UlearnGame
 
         private void OnTimerEvent()
         {
-            mainPlayer.curentShootDelay += updateTimer.Interval;
+            mainPlayer.CurentShootDelay += updateTimer.Interval;
+            
             enemyController.MoveEnemies(mainPlayer);
             enemyController.CheckForHit(mainPlayer);
             Movement(mainPlayer);
@@ -84,6 +85,8 @@ namespace UlearnGame
 
             foreach (var enemy in enemyController.Enemies)
             {
+                enemy.CurrentShootDelay += updateTimer.Interval;
+
                 var enemyMissles = enemy.GetMissles();
                 if (mainPlayer.OnMissleConflict(enemyMissles) && mainPlayer.Health < 0)
                 {

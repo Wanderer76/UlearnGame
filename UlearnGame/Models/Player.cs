@@ -13,7 +13,6 @@ namespace UlearnGame.Models
         private int maxHealth = 100;
         private int maxArmor = 50;
 
-
         public const int ShipSize = 50;
 
         public int Health { get; set; }
@@ -28,11 +27,11 @@ namespace UlearnGame.Models
         public PictureBox PlayerImage { get; set; }
 
         private int shootInterval = 600;
-        public int curentShootDelay = 0;
+        public int CurentShootDelay = 0;
 
         private readonly Form activeForm;
 
-        public readonly List<IMissle> MisslePool;
+        public readonly List<PlayerMissle> MisslePool;
 
         private readonly Dictionary<Direction, Image> PlayerRotations = new Dictionary<Direction, Image>();
 
@@ -47,7 +46,7 @@ namespace UlearnGame.Models
 
             activeForm = form;
             position = new Vector(activeForm.ClientSize.Width / 2, activeForm.ClientSize.Height / 2);
-            MisslePool = new List<IMissle>(MissleCapacity);
+            MisslePool = new List<PlayerMissle>(MissleCapacity);
 
             PlayerImage = new PictureBox
             {
@@ -123,12 +122,12 @@ namespace UlearnGame.Models
 
         private void Shoot()
         {
-            if (curentShootDelay >= shootInterval)
+            if (CurentShootDelay >= shootInterval)
             {
                 var missle = MisslePool.FirstOrDefault(missle => missle.GetPosition().Direction == Direction.None);
                 if (missle != null)
                 {
-                    curentShootDelay = 0;
+                    CurentShootDelay = 0;
                     missle.Damage = Damage;
                     missle.MissleSpeed = MissleSpeed;
                     missle.Direction = position.Direction;
