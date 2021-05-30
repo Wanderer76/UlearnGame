@@ -12,18 +12,16 @@ namespace UlearnGame.Models
         public const int Height = 25;
 
         public bool IsActive { get; private set; } = false;
-
         public int Damage { get; set; }
         public int MissleSpeed { get; set; }
-
-        private readonly int maxHeight;
-        private readonly int maxWidth;
-
         public Direction Direction { get => position.Direction; set => position.Direction = value; }
         public PictureBox MissleImage { get; private set; }
 
-        private Vector position;
+        private readonly int maxHeight;
+        private readonly int maxWidth;
         private readonly Dictionary<Direction, Image> images;
+
+        private Vector position;
 
         public PlayerMissle(Image image, Direction direction, int missleSpeed, int maxHeight, int maxWidth, int x, int y)
         {
@@ -47,9 +45,7 @@ namespace UlearnGame.Models
 
             images = new Dictionary<Direction, Image>();
             images.Add(Direction.Top, new Bitmap(image, Width, Height));
-            images.Add(Direction.Right, RotateImage(images[Direction.Top], RotateFlipType.Rotate90FlipNone));
-            images.Add(Direction.Down, RotateImage(images[Direction.Right], RotateFlipType.Rotate90FlipNone));
-            images.Add(Direction.Left, RotateImage(images[Direction.Down], RotateFlipType.Rotate90FlipNone));
+            images.Add(Direction.Down, RotateImage(images[Direction.Top], RotateFlipType.Rotate180FlipNone));
         }
 
         public void Move()
@@ -60,17 +56,7 @@ namespace UlearnGame.Models
             if (position.Direction == Direction.Left)
                 position.X -= MissleSpeed;
 
-            if (position.Direction == Direction.Right)
-                position.X += MissleSpeed;
-
-            if (position.Direction == Direction.Down)
-                position.Y += MissleSpeed;
-
             if (position.Y < 0 || position.Y > maxHeight)
-            {
-                StopMissle();
-            }
-            if (position.X < 0 || position.X > maxWidth)
             {
                 StopMissle();
             }
@@ -111,6 +97,7 @@ namespace UlearnGame.Models
             bmp.RotateFlip(angle);
             return bmp;
         }
+
         public Vector GetPosition() => position;
     }
 }

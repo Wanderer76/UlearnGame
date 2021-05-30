@@ -13,20 +13,21 @@ namespace UlearnGame.Models
         public const int MissleWidth = 20;
         public const int MissleHeight = 25;
         public const int LightEnemySize = 50;
+
         public int Speed { get; set; }
         public int Damage { get; set; }
-        public readonly int MissleSpeed;
-        public readonly List<IMissle> Missles;
-
-        private int shootInterval = 1000;
         public int CurrentShootDelay { get; set; } = 0;
 
-        private Vector position;
+        public readonly int MissleSpeed;
+        public readonly List<IMissle> Missles;
         private int health = 30;
-        private PictureBox Enemy;
+        private readonly int shootInterval = 1000;
+        private readonly PictureBox Enemy;
         private readonly Dictionary<Direction, Image> enemyRotations;
-
         private readonly Form activeForm;
+        
+        private Vector position;
+
 
         public LightEnemy(Form form, int missleCount, int missleSpeed = 2, int shootInterval = 1000, int damage = 15, int speed = 1)
         {
@@ -103,7 +104,7 @@ namespace UlearnGame.Models
                 {
                     position.X -= Speed;
                 }
-                if (playerPosition.Y > position.Y && position.Y < (activeForm.ClientSize.Height / 2))
+                if (playerPosition.Y > position.Y && position.Y < activeForm.ClientSize.Height / 2 - LightEnemySize)
                 {
                     position.Direction = Direction.Down;
                     Enemy.Image = enemyRotations[Direction.Down];
@@ -134,7 +135,7 @@ namespace UlearnGame.Models
                 this.position.Direction = Direction.Right;
                 this.position.X += Speed;
             }
-            if (position.Y >= this.position.Y || this.position.Y > activeForm.ClientSize.Height / 2)
+            if (position.Y >= this.position.Y || this.position.Y > activeForm.ClientSize.Height / 2 - LightEnemySize)
             {
                 this.position.Direction = Direction.Top;
                 this.position.Y -= Speed;

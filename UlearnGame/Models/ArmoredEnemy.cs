@@ -20,12 +20,13 @@ namespace UlearnGame.Models
 
         public readonly int MissleSpeed;
         public readonly List<IMissle> Missles;
-        private Vector position;
-        private int health = 50;
         private readonly PictureBox Enemy;
         private readonly Dictionary<Direction, Image> enemyRotations;
         private readonly int shootInterval;
         private readonly Form activeForm;
+
+        private Vector position;
+        private int health = 50;
 
         public ArmoredEnemy(Form form, int missleCount, int missleSpeed = 3, int shootInterval = 1000, int damage = 20, int speed = 1)
         {
@@ -42,7 +43,7 @@ namespace UlearnGame.Models
 
             enemyRotations = new Dictionary<Direction, Image>
             {
-                { Direction.Down, Enemy.Image }
+                { Direction.Down, Enemy.Image },
             };
             for (var i = 1; i < 4; i++)
                 enemyRotations.Add((Direction)i, enemyRotations[(Direction)(i - 1)].RotateImage());
@@ -92,6 +93,7 @@ namespace UlearnGame.Models
         public IEnumerable<IMissle> GetMissles() => Missles;
         public Vector GetPosition() => position;
         public PictureBox GetSource() => Enemy;
+
         public void MoveFromPoint(Vector position)
         {
             if (position.X >= this.position.X)
@@ -104,7 +106,7 @@ namespace UlearnGame.Models
                 this.position.Direction = Direction.Right;
                 this.position.X += Speed;
             }
-            if (position.Y >= this.position.Y || this.position.Y > activeForm.ClientSize.Height / 2)
+            if (position.Y >= this.position.Y || this.position.Y > activeForm.ClientSize.Height / 2 - ArmoredEnemySize)
             {
                 this.position.Direction = Direction.Top;
                 this.position.Y -= Speed;
@@ -131,7 +133,7 @@ namespace UlearnGame.Models
 
                     position.X -= Speed;
                 }
-                if (playerPosition.Y > position.Y && position.Y < (activeForm.ClientSize.Height / 2))
+                if (playerPosition.Y > position.Y && position.Y < activeForm.ClientSize.Height / 2 - ArmoredEnemySize)
                 {
                     position.Direction = Direction.Down;
                     Enemy.Image = enemyRotations[Direction.Down];

@@ -10,9 +10,8 @@ namespace UlearnGame.Models
 {
     public class Player
     {
-        private int maxHealth = 100;
-        private int maxArmor = 50;
-
+        private const int maxHealth = 100;
+        private const int maxArmor = 50;
         public const int ShipSize = 50;
 
         public int Health { get; set; }
@@ -20,24 +19,16 @@ namespace UlearnGame.Models
         public int Speed { get; private set; } = 5;
         public int Damage { get; private set; } = 10;
         public int MissleSpeed { get; private set; } = 5;
-
-        public readonly int MissleCapacity = 5;
-
-        private Vector position;
         public PictureBox PlayerImage { get; set; }
 
-        private int shootInterval = 600;
-        public int CurentShootDelay = 0;
-
         private readonly Form activeForm;
-
+        private readonly Image missleSource = Properties.Resources.spaceMissiles_013;
+        public readonly int MissleCapacity = 5;
         public readonly List<PlayerMissle> MisslePool;
 
-        private readonly Dictionary<Direction, Image> PlayerRotations = new Dictionary<Direction, Image>();
-
-        private readonly Image missleSource = Properties.Resources.spaceMissiles_013;
-
-        public readonly PictureBox SpeedEffect;
+        private Vector position;
+        private int shootInterval = 600;
+        public int CurentShootDelay = 0;
 
         public Player(Form form)
         {
@@ -45,7 +36,13 @@ namespace UlearnGame.Models
             Armor = maxArmor;
 
             activeForm = form;
-            position = new Vector(activeForm.ClientSize.Width / 2, activeForm.ClientSize.Height / 2);
+            position = new Vector
+            {
+                X = activeForm.ClientSize.Width / 2,
+                Y = activeForm.ClientSize.Height / 2,
+                Direction = Direction.Top
+            };
+
             MisslePool = new List<PlayerMissle>(MissleCapacity);
 
             PlayerImage = new PictureBox
@@ -53,21 +50,20 @@ namespace UlearnGame.Models
                 Image = new Bitmap(Properties.Resources.spaceShips_001, ShipSize, ShipSize),
                 BackColor = Color.Transparent,
             };
-            SpeedEffect = new PictureBox
-            {
-                Image = new Bitmap(Properties.Resources.spaceEffects_002, ShipSize / 2, ShipSize / 2)
-            };
-
-            PlayerRotations[Direction.Down] = PlayerImage.Image;
-
-            for (var i = 1; i < 4; i++)
-                PlayerRotations.Add((Direction)i, PlayerRotations[(Direction)(i - 1)].RotateImage());
-
-            PlayerImage.Image = PlayerRotations[Direction.Top];
-            position.Direction = Direction.Top;
+            PlayerImage.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
 
             for (var i = 0; i < MisslePool.Capacity; i++)
-                MisslePool.Add(new PlayerMissle(missleSource, Direction.None, MissleSpeed, activeForm.ClientSize.Height, activeForm.ClientSize.Width, -2000, -2000));
+            {
+                MisslePool.Add(new PlayerMissle(
+                        missleSource,
+                        Direction.None,
+                        MissleSpeed,
+                        activeForm.ClientSize.Height,
+                        activeForm.ClientSize.Width,
+                        -2000,
+                        -2000
+                        ));
+            }
         }
 
         public Vector GetPosition() => position;
@@ -189,6 +185,7 @@ namespace UlearnGame.Models
             }
             return false;
         }
+
         public bool FillHealth(int score)
         {
             if (score >= UpgradePrices.HealthFill)

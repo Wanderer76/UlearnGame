@@ -5,6 +5,7 @@ namespace UlearnGame.Controllers
     public class WaveController
     {
         public int Wave { get; private set; } = 1;
+
         private readonly EnemyController enemyController;
         private readonly Timer delayTimer;
 

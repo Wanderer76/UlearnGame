@@ -14,10 +14,11 @@ namespace UlearnGame
         public static int scores = 0;
 
         private Player mainPlayer;
-        private readonly Timer updateTimer;
         private EnemyController enemyController;
-        private UiView uiView;
         private WaveController waveController;
+        private UiView uiView;
+
+        private readonly Timer updateTimer;
         private bool IsDead = false;
 
         private const int EnemyCount = 15;
@@ -53,7 +54,7 @@ namespace UlearnGame
         {
             mainPlayer.CurentShootDelay += updateTimer.Interval;
 
-            enemyController.MoveEnemies(mainPlayer);
+            enemyController.MoveEnemiesToPlayer(mainPlayer);
             enemyController.CheckForHit(mainPlayer);
             Movement();
 
@@ -132,6 +133,11 @@ namespace UlearnGame
             uiView = new UiView(this, waveController, enemyController, mainPlayer);
             MinimumSize = new Size(720, 720);
             MaximumSize = new Size(720, 720);
+
+            upgradeDamageButton.Text += $"\n {UpgradePrices.DamageUpgrade} scores";
+            upgradeSpeedButton.Text += $"\n {UpgradePrices.MissleSpeedUpgrade} scores";
+            fillHealthButton.Text += $"\n {UpgradePrices.HealthFill} scores";
+            fillArmorButton.Text += $"\n {UpgradePrices.ArmorFill} scores";
 
 
             upgradeDamageButton.Click += (sender, args) =>

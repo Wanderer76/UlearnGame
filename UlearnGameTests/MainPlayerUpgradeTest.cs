@@ -107,7 +107,6 @@ namespace UlearnGameTests
                 new EnemyMissle(new Bitmap(45,45),Direction.Down,231,15,955,955,945,945,player.GetPosition().X,player.GetPosition().Y),
                 new EnemyMissle(new Bitmap(45,45),Direction.Down,231,15,955,955,945,945,player.GetPosition().X,player.GetPosition().Y),
             };
-
             player.OnMissleConflict(missles);
             var health = player.Health;
             Assert.IsTrue(player.FillHealth(score));

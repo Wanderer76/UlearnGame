@@ -9,26 +9,25 @@ namespace UlearnGame.Controllers
     public class EnemyController
     {
         public bool IsEnd { get; private set; } = false;
+        public int CountOfEnemies { get; private set; }
+        public int DeadCount { get; private set; } = 0;
+        public List<IEnemy> Enemies { get; private set; }
+
+        private readonly Timer spawnTimer;
+        private readonly Form form;
 
         private int currentWave = 0;
         private int spawnEnemiesCount = 0;
-
         private int MissleCount = 1;
         private int damage = 15;
         private int speed = 1;
         private int missleSpeed = 2;
         private int shootInterval = 1000;
-
         private int spawnDelay = 1200;
-        private readonly Timer spawnTimer;
-
-        public int CountOfEnemies { get; private set; }
-        public int DeadCount { get; private set; } = 0;
-        public List<IEnemy> Enemies { get; private set; }
-
 
         public EnemyController(int count, Form form)
         {
+            this.form = form;
             CountOfEnemies = count;
             Enemies = new List<IEnemy>(count);
 
@@ -76,7 +75,7 @@ namespace UlearnGame.Controllers
             spawnTimer.Stop();
         }
 
-        public void MoveEnemies(Player mainPlayer)
+        public void MoveEnemiesToPlayer(Player mainPlayer)
         {
             for (var i = 0; i < Enemies.Count; i++)
             {
@@ -88,7 +87,8 @@ namespace UlearnGame.Controllers
                     if (Enemies[i].GetPosition().Distance(Enemies[j].GetPosition()) < 120)
                         Enemies[i].MoveFromPoint(Enemies[j].GetPosition());
                 }
-                Enemies[i].MoveToPoint(mainPlayer.GetPosition());
+                if (Enemies[i].GetPosition().Y <= form.ClientSize.Height)
+                    Enemies[i].MoveToPoint(mainPlayer.GetPosition());
             }
         }
 
@@ -126,8 +126,8 @@ namespace UlearnGame.Controllers
             if (currentWave % 2 == 0)
             {
                 damage = damage + 1 > 30 ? 30 : damage + 2;
-                speed = speed + 1 > 5 ? 5 : speed++;
-                missleSpeed = missleSpeed + 1 > 9 ? 9 : missleSpeed++;
+                speed = speed + 1 > 5 ? 5 : speed + 1;
+                missleSpeed = missleSpeed + 1 > 9 ? 9 : missleSpeed + 1;
             }
             spawnDelay = spawnDelay < 200 ? 200 : spawnDelay - 50;
             spawnTimer.Interval = spawnDelay;

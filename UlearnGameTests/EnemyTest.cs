@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using NUnit.Framework;
 using UlearnGame.Interfaces;
@@ -55,9 +56,9 @@ namespace UlearnGameTests
 
             for (var i = 0; i < 2; i++)
                 missles.Add(new PlayerMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Top, 5, 480, 640, enemyPosition.X, enemyPosition.Y));
-            
+
             Assert.IsTrue(enemy.OnMissleConflict(missles));
-        }   
+        }
 
         [Test]
         public void NotDeadInConflictTest()
@@ -69,10 +70,9 @@ namespace UlearnGameTests
             var missles = new List<PlayerMissle>();
 
             for (var i = 0; i < 2; i++)
-                missles.Add(new PlayerMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Top, 5, 480, 640, enemyPosition.X + 100, enemyPosition.Y+100));
-            
+                missles.Add(new PlayerMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Top, 5, 480, 640, enemyPosition.X + 100, enemyPosition.Y + 100));
+
             Assert.IsFalse(enemy.OnMissleConflict(missles));
         }
-
     }
 }

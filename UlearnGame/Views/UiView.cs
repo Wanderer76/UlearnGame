@@ -6,7 +6,7 @@ namespace UlearnGame.Controllers
 {
     public class UiView
     {
-        private MainForm mainForm;
+        private readonly MainForm mainForm;
         private readonly Player player;
         private readonly EnemyController enemyController;
         private readonly Label healthLabel;
@@ -82,8 +82,8 @@ namespace UlearnGame.Controllers
         public void ShowUpgradePanel()
         {
             mainForm.upgradePanel.Visible = true;
-
         }
+
         public void HideUpgradePanel()
         {
             mainForm.upgradePanel.Visible = false;

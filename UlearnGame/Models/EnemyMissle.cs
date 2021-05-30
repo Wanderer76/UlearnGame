@@ -43,7 +43,7 @@ namespace UlearnGame.Models
                 Height = height
             };
 
-           
+
         }
 
         public void Move()
@@ -56,18 +56,8 @@ namespace UlearnGame.Models
                 case Direction.Down:
                     position.Y += MissleSpeed;
                     break;
-                case Direction.Left:
-                    position.X -= MissleSpeed;
-                    break;
-                case Direction.Right:
-                    position.X += MissleSpeed;
-                    break;
             }
             if (position.Y > maxHeight || position.Y < 0)
-            {
-                StopMissle();
-            }
-            if (position.X > maxWidth || position.X < 0)
             {
                 StopMissle();
             }
@@ -103,6 +93,7 @@ namespace UlearnGame.Models
             bmp.RotateFlip(angle);
             return bmp;
         }
+
         public Vector GetPosition() => position;
     }
 }
