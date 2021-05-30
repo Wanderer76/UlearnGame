@@ -15,9 +15,9 @@ namespace UlearnGame
 
         private void playButton_Click(object sender, EventArgs e)
         {
-            Hide();
             var mainForm = new MainForm();
             mainForm.Show();
+            Hide();
         }
 
         private void quitButton_Click(object sender, EventArgs e)

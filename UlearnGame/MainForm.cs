@@ -106,6 +106,15 @@ namespace UlearnGame
             if (IsDead)
             {
                 updateTimer.Stop();
+                scores = 0;
+                foreach (var form in Application.OpenForms)
+                {
+                    if (form is MenuForm menuForm)
+                    {
+                        menuForm.Show();
+                    }
+                }
+                Hide();
                 MessageBox.Show("Потрачено");
             }
             else
