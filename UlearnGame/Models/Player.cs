@@ -139,6 +139,7 @@ namespace UlearnGame.Models
 
         public bool OnMissleConflict(IEnumerable<IMissle> missle)
         {
+            var isHited = false;
             foreach (var i in missle)
             {
                 if (i.GetPosition().Distance(position) < ShipSize - 20)
@@ -152,10 +153,10 @@ namespace UlearnGame.Models
                         Health -= i.Damage / 4;
 
                     }
-                    return true;
+                    isHited = true;
                 }
             }
-            return false;
+            return isHited;
         }
 
         public bool UpgradeDamage(int score)
@@ -170,7 +171,7 @@ namespace UlearnGame.Models
 
         public bool UpgradeMissleSpeed(int score)
         {
-            if (score >= UpgradePrices.MissleUpgrade)
+            if (score >= UpgradePrices.MissleSpeedUpgrade)
             {
                 MissleSpeed++;
                 return true;

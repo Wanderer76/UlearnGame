@@ -21,10 +21,10 @@ namespace UlearnGame.Models
 
         private readonly Dictionary<Direction, Image> images;
 
-        public EnemyMissle(Image image, Direction direction, int missleSpeed, int width, int height, int maxHeight, int maxWidth, int x, int y)
+        public EnemyMissle(Image image, Direction direction, int missleSpeed, int damage, int width, int height, int maxHeight, int maxWidth, int x, int y)
         {
             MissleSpeed = missleSpeed;
-
+            Damage = damage;
             images = new Dictionary<Direction, Image>();
             images.Add(Direction.Top, new Bitmap(image, width, height));
             images.Add(Direction.Right, RotateImage(images[Direction.Top], RotateFlipType.Rotate90FlipNone));

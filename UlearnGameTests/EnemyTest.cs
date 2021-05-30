@@ -51,7 +51,7 @@ namespace UlearnGameTests
             var enemy = new LightEnemy(form, 1, 2, 15, 10);
             var enemyPosition = enemy.GetPosition();
 
-            var missles = new List<IMissle>();
+            var missles = new List<PlayerMissle>();
 
             for (var i = 0; i < 2; i++)
                 missles.Add(new PlayerMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Top, 5, 480, 640, enemyPosition.X, enemyPosition.Y));
@@ -66,7 +66,7 @@ namespace UlearnGameTests
             var enemy = new LightEnemy(form, 1, 2, 15, 10);
             var enemyPosition = enemy.GetPosition();
 
-            var missles = new List<IMissle>();
+            var missles = new List<PlayerMissle>();
 
             for (var i = 0; i < 2; i++)
                 missles.Add(new PlayerMissle(new Bitmap(PlayerMissle.Width, PlayerMissle.Height), Direction.Top, 5, 480, 640, enemyPosition.X + 100, enemyPosition.Y+100));

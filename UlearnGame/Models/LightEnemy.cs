@@ -58,6 +58,7 @@ namespace UlearnGame.Models
                         Properties.Resources.spaceMissiles_015,
                         Direction.None,
                         missleSpeed,
+                        damage,
                         MissleWidth,
                         MissleHeight,
                         activeForm.ClientSize.Height,

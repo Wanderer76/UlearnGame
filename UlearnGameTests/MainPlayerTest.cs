@@ -5,6 +5,7 @@ using UlearnGame.Interfaces;
 using UlearnGame.Models;
 using UlearnGame.Utilities;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace UlearnGameTests
 {
@@ -39,7 +40,7 @@ namespace UlearnGameTests
             var player = new Player(form);
             var startPosition = player.GetPosition();
             for (var i = 0; i < count; i++)
-                player.MoveToRight();
+                player.MakeMove(Key.D);
 
             Assert.AreEqual(startPosition.X + player.Speed * count, player.GetPosition().X);
 
@@ -58,7 +59,7 @@ namespace UlearnGameTests
             var player = new Player(form);
             var startPosition = player.GetPosition();
             for (var i = 0; i < count; i++)
-                player.MoveToLeft();
+                player.MakeMove(Key.A);
 
             Assert.AreEqual(startPosition.X - player.Speed * count, player.GetPosition().X);
         }
@@ -76,7 +77,7 @@ namespace UlearnGameTests
             var player = new Player(form);
             var startPosition = player.GetPosition();
             for (var i = 0; i < count; i++)
-                player.MoveToTop();
+                player.MakeMove(Key.W);
 
             Assert.AreEqual(startPosition.Y - player.Speed * count, player.GetPosition().Y);
 
@@ -94,7 +95,7 @@ namespace UlearnGameTests
             var player = new Player(form);
             var startPosition = player.GetPosition();
             for (var i = 0; i < count; i++)
-                player.MoveToDown();
+                player.MakeMove(Key.S);
 
             Assert.AreEqual(startPosition.Y + player.Speed * count, player.GetPosition().Y);
 
@@ -110,7 +111,7 @@ namespace UlearnGameTests
             };
             var player = new Player(form);
             for (var i = 0; i < count; i++)
-                player.MoveToRight();
+                player.MakeMove(Key.D);
 
             Assert.LessOrEqual(form.ClientSize.Width - player.GetPosition().X, Player.ShipSize);
 
@@ -126,7 +127,7 @@ namespace UlearnGameTests
             };
             var player = new Player(form);
             for (var i = 0; i < count; i++)
-                player.MoveToLeft();
+                player.MakeMove(Key.A);
 
             Assert.LessOrEqual(0 + player.GetPosition().X, Player.ShipSize);
         }
@@ -141,7 +142,7 @@ namespace UlearnGameTests
             };
             var player = new Player(form);
             for (var i = 0; i < count; i++)
-                player.MoveToTop();
+                player.MakeMove(Key.W);
 
             Assert.LessOrEqual(player.GetPosition().Y, Player.ShipSize);
 
@@ -156,7 +157,7 @@ namespace UlearnGameTests
             };
             var player = new Player(form);
             for (var i = 0; i < count; i++)
-                player.MoveToDown();
+                player.MakeMove(Key.S);
 
             Assert.LessOrEqual(form.ClientSize.Width - player.GetPosition().Y, Player.ShipSize);
         }
@@ -164,13 +165,13 @@ namespace UlearnGameTests
         [TestCase(1280 / 2, 720 / 2)]
         [TestCase(1280 / 2 + LightEnemy.MissleWidth, 720 / 2)]
         [TestCase(1280 / 2, 720 / 2 + LightEnemy.MissleHeight)]
-        [TestCase(1280 / 2 + LightEnemy.MissleWidth, 720 / 2 + LightEnemy.MissleHeight)]
+        [TestCase(1280 / 2 + LightEnemy.MissleWidth, 720 / 2)]
         public void TestDead(int x, int y)
         {
             var missle = new List<IMissle>
             {
-                new EnemyMissle(new Bitmap(LightEnemy.MissleWidth, LightEnemy.MissleHeight), Direction.None, 5,LightEnemy.MissleWidth, LightEnemy.MissleHeight, 720, 1280,x, y),
-                new EnemyMissle(new Bitmap(LightEnemy.MissleWidth, LightEnemy.MissleHeight), Direction.None, 5,LightEnemy.MissleWidth, LightEnemy.MissleHeight, 720, 1280,x, y)
+                new EnemyMissle(new Bitmap(LightEnemy.MissleWidth, LightEnemy.MissleHeight), Direction.None, 5,15,LightEnemy.MissleWidth, LightEnemy.MissleHeight, 720, 1280,x, y),
+                new EnemyMissle(new Bitmap(LightEnemy.MissleWidth, LightEnemy.MissleHeight), Direction.None, 5,15,LightEnemy.MissleWidth, LightEnemy.MissleHeight, 720, 1280,x, y)
             };
             var form = new Form
             {
@@ -189,8 +190,8 @@ namespace UlearnGameTests
         {
             var missle = new List<IMissle>
             {
-                new EnemyMissle(new Bitmap(LightEnemy.MissleWidth, LightEnemy.MissleHeight), Direction.None, 5,LightEnemy.MissleWidth, LightEnemy.MissleHeight, 720, 1280,x, y),
-                new EnemyMissle(new Bitmap(LightEnemy.MissleWidth, LightEnemy.MissleHeight), Direction.None, 5,LightEnemy.MissleWidth, LightEnemy.MissleHeight, 720, 1280,x, y)
+                new EnemyMissle(new Bitmap(LightEnemy.MissleWidth, LightEnemy.MissleHeight), Direction.None, 5,15,LightEnemy.MissleWidth, LightEnemy.MissleHeight, 720, 1280,x, y),
+                new EnemyMissle(new Bitmap(LightEnemy.MissleWidth, LightEnemy.MissleHeight), Direction.None, 5,15,LightEnemy.MissleWidth, LightEnemy.MissleHeight, 720, 1280,x, y)
 
             };
             var form = new Form

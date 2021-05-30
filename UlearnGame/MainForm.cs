@@ -55,14 +55,12 @@ namespace UlearnGame
 
             enemyController.MoveEnemies(mainPlayer);
             enemyController.CheckForHit(mainPlayer);
-            Movement(mainPlayer);
-
+            Movement();
 
             foreach (var missle in mainPlayer.MisslePool.Where(m => m.IsActive))
             {
                 missle.Move();
             }
-
 
             for (int i = 0; i < enemyController.Enemies.Count; i++)
             {
@@ -105,20 +103,25 @@ namespace UlearnGame
 
             if (IsDead)
             {
-                updateTimer.Stop();
-                scores = 0;
-                foreach (var form in Application.OpenForms)
-                {
-                    if (form is MenuForm menuForm)
-                    {
-                        menuForm.Show();
-                    }
-                }
-                Hide();
-                MessageBox.Show("Потрачено");
+                OnDead();
             }
             else
                 Invalidate();
+        }
+
+        private void OnDead()
+        {
+            updateTimer.Stop();
+            scores = 0;
+            foreach (var form in Application.OpenForms)
+            {
+                if (form is MenuForm menuForm)
+                {
+                    menuForm.Show();
+                }
+            }
+            Hide();
+            MessageBox.Show("Потрачено");
         }
 
         private void Init()
@@ -140,7 +143,7 @@ namespace UlearnGame
             upgradeSpeedButton.Click += (sender, args) =>
             {
                 if (mainPlayer.UpgradeMissleSpeed(scores))
-                    scores -= UpgradePrices.MissleUpgrade;
+                    scores -= UpgradePrices.MissleSpeedUpgrade;
 
             };
 
@@ -197,27 +200,27 @@ namespace UlearnGame
             }
         }
 
-        private void Movement(Player player)
+        private void Movement()
         {
             if (Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Up))
             {
-                player.MakeMove(Key.W);
+                mainPlayer.MakeMove(Key.W);
             }
             if (Keyboard.IsKeyDown(Key.S) || Keyboard.IsKeyDown(Key.Down))
             {
-                player.MakeMove(Key.S);
+                mainPlayer.MakeMove(Key.S);
             }
             if (Keyboard.IsKeyDown(Key.D) || Keyboard.IsKeyDown(Key.Right))
             {
-                player.MakeMove(Key.D);
+                mainPlayer.MakeMove(Key.D);
             }
             if (Keyboard.IsKeyDown(Key.A) || Keyboard.IsKeyDown(Key.Left))
             {
-                player.MakeMove(Key.A);
+                mainPlayer.MakeMove(Key.A);
             }
             if (Keyboard.IsKeyDown(Key.Space))
             {
-                player.MakeMove(Key.Space);
+                mainPlayer.MakeMove(Key.Space);
             }
         }
     }
