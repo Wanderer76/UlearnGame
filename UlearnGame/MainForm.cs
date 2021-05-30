@@ -8,24 +8,21 @@ using System.Linq;
 using System.Windows.Input;
 using System.Collections.Generic;
 using UlearnGame.Interfaces;
-using UlearnGame.Models.Bonuses;
 
 namespace UlearnGame
 {
     public partial class MainForm : Form
     {
+        public static int scores = 0;
 
         private Player mainPlayer;
         private readonly Timer updateTimer;
         private EnemyController enemyController;
-        private UIController uIController;
+        private UiView uIController;
         private WaveController waveController;
-        private List<IBonus> bonuses;
         private bool IsDead = false;
 
         private const int EnemyCount = 15;
-        private const double healthSpawnProbability = 0.00001;
-        private const double armorSpawnProbability = 0.0005;
 
         public MainForm()
         {
@@ -42,7 +39,6 @@ namespace UlearnGame
             {
                 OnTimerEvent();
             };
-            //updateTimer.Start();
 
             FormClosed += (sender, args) =>
             {
@@ -53,7 +49,7 @@ namespace UlearnGame
             {
                 var timer = new Timer
                 {
-                    Interval = 5000
+                    Interval = 1
                 };
                 timer.Tick += (sender, args) =>
                 {
@@ -72,25 +68,10 @@ namespace UlearnGame
 
         private void OnTimerEvent()
         {
-            Movement(mainPlayer);
+            mainPlayer.curentShootDelay += updateTimer.Interval;
             enemyController.MoveEnemies(mainPlayer);
             enemyController.CheckForHit(mainPlayer);
-            RandomBonusGenerate();
-            for (int i = 0; i < bonuses.Count; i++)
-            {
-                bonuses[i].StartMotion();
-                bonuses[i].OnConflict(mainPlayer);
-                if (bonuses[i].OnConflict(mainPlayer))
-                {
-                    bonuses.RemoveAt(i);
-                    i--;
-                }
-                else if(bonuses[i].GetPosition().Y > ClientSize.Height)
-                {
-                    bonuses.RemoveAt(i);
-                    i--;
-                }
-            }
+            Movement(mainPlayer);
 
             for (int i = 0; i < enemyController.Enemies.Count; i++)
             {
@@ -107,7 +88,6 @@ namespace UlearnGame
                 if (mainPlayer.OnMissleConflict(enemyMissles) && mainPlayer.Health < 0)
                 {
                     IsDead = true;
-                    updateTimer.Stop();
                 }
             }
 
@@ -117,10 +97,13 @@ namespace UlearnGame
                 enemyController.IncreaseWave();
             }
 
-            if (!IsDead)
-                Invalidate();
-            else
+            if (IsDead)
+            {
+                updateTimer.Stop();
                 MessageBox.Show("Потрачено");
+            }
+            else
+                Invalidate();
         }
 
         private void Init()
@@ -128,8 +111,7 @@ namespace UlearnGame
             mainPlayer = new Player(this);
             enemyController = new EnemyController(EnemyCount, this);
             waveController = new WaveController(enemyController);
-            uIController = new UIController(this, waveController, enemyController, mainPlayer);
-            bonuses = new List<IBonus>(3);
+            uIController = new UiView(this, waveController, enemyController, mainPlayer);
             MinimumSize = new Size(720, 720);
             MaximumSize = new Size(720, 720);
 
@@ -146,10 +128,6 @@ namespace UlearnGame
 
             graph.DrawImage(mainPlayer.PlayerImage.Image, mainPlayer.GetPosition().ToPoint());
 
-            foreach (var bonus in bonuses.Where(bonus => bonus.GetPosition().Direction != Direction.None))
-            {
-                graph.DrawImage(bonus.GetImage(), bonus.GetPosition().ToPoint());
-            }
             foreach (var enemy in enemyController.Enemies)
             {
                 graph.DrawImage(enemy.GetImage(), enemy.GetPosition().ToPoint());
@@ -183,35 +161,24 @@ namespace UlearnGame
         {
             if (Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.Up))
             {
-                player.MoveToTop();
+                player.MakeMove(Key.W);
             }
             if (Keyboard.IsKeyDown(Key.S) || Keyboard.IsKeyDown(Key.Down))
             {
-                player.MoveToDown();
+                player.MakeMove(Key.S);
             }
             if (Keyboard.IsKeyDown(Key.D) || Keyboard.IsKeyDown(Key.Right))
             {
-                player.MoveToRight();
+                player.MakeMove(Key.D);
             }
             if (Keyboard.IsKeyDown(Key.A) || Keyboard.IsKeyDown(Key.Left))
             {
-                player.MoveToLeft();
+                player.MakeMove(Key.A);
             }
             if (Keyboard.IsKeyDown(Key.Space))
             {
-                player.Shoot();
+                player.MakeMove(Key.Space);
             }
         }
-
-        private void RandomBonusGenerate()
-        {
-            var random = new Random();
-            if (random.NextDouble() < healthSpawnProbability)
-            {
-                if (bonuses.Count != bonuses.Capacity)
-                    bonuses.Add(new HealthBonus(this, 25));
-            }
-        }
-
     }
 }

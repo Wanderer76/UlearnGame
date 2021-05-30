@@ -104,6 +104,15 @@ namespace UlearnGame.Controllers
                     Enemies[i].SetSource(img);
                     if (Enemies[i].GetHealth() <= 0)
                     {
+                        if(Enemies[i] is LightEnemy)
+                        {
+                            MainForm.scores += 10;
+                        }
+                        if(Enemies[i] is ArmoredEnemy)
+                        {
+                            MainForm.scores += 20;
+                        }
+
                         Enemies.RemoveAt(i);
                         DeadCount++;
                     }
