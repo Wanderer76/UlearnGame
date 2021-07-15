@@ -1,167 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using System.Drawing;
 using System.Windows.Forms;
-using UlearnGame.Interfaces;
-using UlearnGame.Utilities;
 
 namespace UlearnGame.Models
 {
-    public class ArmoredEnemy : IEnemy
+    public class ArmoredEnemy : CommonEnemy
     {
         public const int MissleWidth = 30;
         public const int MissleHeight = 50;
         public const int ArmoredEnemySize = 60;
-
-        public int Damage { get; set; }
-        public int CurrentShootDelay { get; set; } = 0;
-        public int Speed { get; set; }
-
-        public readonly int MissleSpeed;
-        public readonly List<IMissle> Missles;
-        private readonly PictureBox Enemy;
-        private readonly Dictionary<Direction, Image> enemyRotations;
-        private readonly int shootInterval;
-        private readonly Form activeForm;
-
-        private Vector position;
-        private int health = 50;
+        public const int Health = 50;
 
         public ArmoredEnemy(Form form, int missleCount, int missleSpeed = 3, int shootInterval = 1000, int damage = 20, int speed = 1)
+            : base(form, missleCount, Health, new Size(MissleWidth, MissleHeight), new Size(ArmoredEnemySize, ArmoredEnemySize), missleSpeed, shootInterval, damage, speed)
         {
-            Enemy = new PictureBox
-            {
-                Size = new Size(ArmoredEnemySize + 20, ArmoredEnemySize + 20),
-                Image = new Bitmap(Properties.Resources.spaceShips_006, ArmoredEnemySize, ArmoredEnemySize),
-            };
 
-            MissleSpeed = missleSpeed;
-            Damage = damage;
-            Speed = speed;
-            this.shootInterval = shootInterval;
-
-            enemyRotations = new Dictionary<Direction, Image>
-            {
-                { Direction.Down, Enemy.Image },
-            };
-            for (var i = 1; i < 4; i++)
-                enemyRotations.Add((Direction)i, enemyRotations[(Direction)(i - 1)].RotateImage());
-
-            activeForm = form;
-
-            Missles = new List<IMissle>(missleCount);
-            for (var i = 0; i < Missles.Capacity; i++)
-            {
-                Missles.Add(
-                    new EnemyMissle(
-                        Properties.Resources.spaceMissiles_001,
-                        Direction.None,
-                        missleSpeed,
-                        damage,
-                        MissleWidth,
-                        MissleHeight,
-                        activeForm.ClientSize.Height,
-                        activeForm.ClientSize.Width,
-                        -2000,
-                        -2000)
-                    );
-            }
-
-            var random = new Random();
-            position = new Vector(random.Next(-150, activeForm.ClientSize.Width), -50);
         }
 
-        public bool OnMissleConflict(IEnumerable<PlayerMissle> missle)
-        {
-            foreach (var i in missle)
-            {
-                if (i is PlayerMissle)
-                {
-                    if (i.GetPosition().Distance(position) < ArmoredEnemySize)
-                    {
-                        i.StopMissle();
-                        health -= i.Damage;
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        public int GetHealth() => health;
-        public Image GetImage() => Enemy.Image;
-        public IEnumerable<IMissle> GetMissles() => Missles;
-        public Vector GetPosition() => position;
-        public PictureBox GetSource() => Enemy;
 
-        public void MoveFromPoint(Vector position)
-        {
-            if (position.X >= this.position.X)
-            {
-                this.position.Direction = Direction.Left;
-                this.position.X -= Speed;
-            }
-            if (position.X < this.position.X)
-            {
-                this.position.Direction = Direction.Right;
-                this.position.X += Speed;
-            }
-            if (position.Y >= this.position.Y || this.position.Y > activeForm.ClientSize.Height / 2 - ArmoredEnemySize)
-            {
-                this.position.Direction = Direction.Top;
-                this.position.Y -= Speed;
-            }
-            if (position.Y < this.position.Y)
-            {
-                this.position.Direction = Direction.Down;
-                this.position.Y += Speed;
-            }
-        }
-        public void MoveToPoint(Vector playerPosition)
-        {
-            int distance = 120;
-
-            if (position.Distance(playerPosition) >= distance)
-            {
-                if (playerPosition.X > position.X)
-                {
-
-                    position.X += Speed;
-                }
-                else if (playerPosition.X < position.X)
-                {
-
-                    position.X -= Speed;
-                }
-                if (playerPosition.Y > position.Y && position.Y < activeForm.ClientSize.Height / 2 - ArmoredEnemySize)
-                {
-                    position.Direction = Direction.Down;
-                    Enemy.Image = enemyRotations[Direction.Down];
-                    position.Y += Speed;
-                }
-                else if (playerPosition.Y < position.Y)
-                {
-                    position.Direction = Direction.Top;
-                    Enemy.Image = enemyRotations[Direction.Top];
-                    position.Y -= Speed;
-                }
-            }
-        }
-        public void Shoot()
-        {
-            if (CurrentShootDelay >= shootInterval)
-            {
-                var missle = Missles.FirstOrDefault(missl => missl.GetPosition().Direction == Direction.None);
-                if (missle != null)
-                {
-                    missle.Direction = position.Direction;
-                    missle.Damage = Damage;
-                    missle.MissleSpeed = MissleSpeed;
-                    missle.SetPosition(position.X + MissleWidth, position.Y);
-                    missle.StartMissle();
-                    CurrentShootDelay = 0;
-                }
-            }
-        }
     }
 }

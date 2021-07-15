@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 using UlearnGame.Interfaces;
 using UlearnGame.Models;
@@ -40,7 +41,7 @@ namespace UlearnGame.Controllers
                 SpawnEnemies(form);
             };
         }
-
+        
         private void SpawnEnemies(Form form)
         {
             if (spawnEnemiesCount < Enemies.Capacity && Enemies.Count < 15)
@@ -108,7 +109,6 @@ namespace UlearnGame.Controllers
                         {
                             MainForm.scores += 20;
                         }
-
                         Enemies.RemoveAt(i);
                         DeadCount++;
                     }
